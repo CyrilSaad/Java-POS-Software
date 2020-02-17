@@ -2,7 +2,7 @@ package com.company;
 import java.util.*;
 import java.io.*;
 import java.time.*;
-public abstract class Transaction implements Serializable, Comparable {
+public abstract class Transaction implements Serializable, Comparable<Transaction> {
 	static int noSerie =0;
 	int noTransaction =0;
 	String description;

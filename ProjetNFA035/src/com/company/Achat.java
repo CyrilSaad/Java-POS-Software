@@ -23,4 +23,10 @@ public class Achat extends TransactionFournisseur {
 		return super.toString() + "\n Nouveau solde: " + fournisseur.solde; 
 	}
 
+	@Override
+	public int compareTo(Transaction arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }
