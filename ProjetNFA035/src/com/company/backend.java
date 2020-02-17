@@ -7,7 +7,7 @@ import java.io.*;
 import com.sun.javafx.collections.MappingChange.Map;
 
 public class backend {
-	ArrayList<Transaction> transactionList;
+	 ArrayList<Transaction> transactionList;
 	 ArrayList<Client> clientList;
 	 HashMap<Paiement, Transaction.TypePaie> paiementMAP;
 	 HashMap<Recu, Transaction.TypePaie> recuMAP;

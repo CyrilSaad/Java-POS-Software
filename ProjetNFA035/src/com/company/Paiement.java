@@ -23,4 +23,9 @@ public class Paiement extends TransactionFournisseur {
 		return super.toString() + "\n Nouveau solde: " + fournisseur.solde; 
 	}
 
+    @Override
+    public int compareTo(Transaction o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

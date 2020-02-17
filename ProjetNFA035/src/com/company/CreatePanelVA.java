@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -48,16 +49,22 @@ public class CreatePanelVA extends JPanel {
 		this.setLayout(new BorderLayout());
 
 		DefaultTableModel tabmod = new DefaultTableModel();
-
+		String tb[] =  {"ok", "yo", "deal", "Haha"};
 		tabmod.addColumn("Achat");
 		tabmod.addColumn("Quantité");
 		tabmod.addColumn(s+" Unit");
 		tabmod.addColumn(s+ " Total");
+		tabmod.addRow(tb);
 		JTable table = new JTable(tabmod);
 		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
+		Font font = new Font("Verdana", Font.PLAIN, 18);  
+		table.setFont(font); 
 		table.setFillsViewportHeight(true);
+		table.setBackground(Color.white);
 		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		table.setShowGrid(true);
+		table.setRowHeight(30);
+		
 		table.setGridColor(Color.blue);
 		JScrollPane scrollPane = new JScrollPane(table);
 
@@ -73,7 +80,7 @@ public class CreatePanelVA extends JPanel {
 		buttonChildPanel.add(quitter);
 		buttonPanel.add(buttonChildPanel, BorderLayout.WEST);
 		JPanel cbPan = new JPanel();
-		JLabel choirsirClient = new JLabel("Choisir client: ");
+		JLabel choirsirClient = new JLabel("Choisir Client: ");
 		cbPan.add(choirsirClient);
 		cbPan.add(combobox);
 		buttonPanel.add(cbPan, BorderLayout.EAST);
