@@ -17,17 +17,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
-	 
-	// ArrayList<Paiement> paiementsDB;
-	// ArrayList<Paiement> paiementsDB;	    
-	JPanel ventePanel = new CreatePanelVA("Vente", "Prix");
-	JPanel achatPanel = new CreatePanelVA("Achat", "Cout");
-	JPanel recuPanel = new CreatePanelRP("Reçu", "Client");
-	JPanel paiementPanel = new CreatePanelRP("Paiement", "Fournisseur");
-	JPanel clientPanel = new CreatePanelCompte("Client");
-	JPanel fournisseurPanel = new CreatePanelCompte("Fournisseur");
-	JPanel articlePanel = new CreatePanelArticle("Article");
-	JPanel categoriePanel = new CreatePanelCategorie("Catégorie");
+	 JFrame frame = new JFrame("Gestion de transactions commerciales");   
+	JPanel ventePanel = new CreatePanelVA("Vente", "Prix", frame);
+	JPanel achatPanel = new CreatePanelVA("Achat", "Cout", frame);
+	JPanel recuPanel = new CreatePanelRP("Reçu", "Client", frame);
+	JPanel paiementPanel = new CreatePanelRP("Paiement", "Fournisseur", frame);
+	JPanel clientPanel = new CreatePanelCompte("Client", frame);
+	JPanel fournisseurPanel = new CreatePanelCompte("Fournisseur", frame);
+	JPanel articlePanel = new CreatePanelArticle("Article", frame);
+	JPanel categoriePanel = new CreatePanelCategorie("Catégorie", frame);
 
 	JPanel rapportVentePanel = new CreateRapportPanelVA("Vente", "Client");
 	JPanel rapportAchatPanel = new CreateRapportPanelVA("Achat", "Fournisseur");
@@ -42,8 +40,9 @@ public class Main {
 	JMenuItem charger, save, version, quitter, ville;
 	JMenuItem[] create = new JMenuItem[10];
 	JMenuItem[] rapport = new JMenuItem[10];
-	JFrame frame;
+	
 	JPanel currentPane;
+
 	static JButton enregistrer = new JButton("Enregistrer");
 
 	public void addModifier(JMenu menu, JMenuItem i1, JMenuItem i2) {
@@ -52,14 +51,15 @@ public class Main {
 	}
 
 	Main() {
+		
 		mb = new JMenuBar();
 		ville = new JMenuItem("Villes");
-		frame = new JFrame("Gestion de transactions commerciales");
 		frame.setSize(new Dimension(1300, 800));
 		for (int i = 0; i < 10; i++) {
 			create[i] = new JMenuItem("Créer/Modifier");
 			rapport[i] = new JMenuItem("Rapports");
 		}
+		currentPane = new JPanel();
 		charger = new JMenuItem("Charger sur disque");
 		save = new JMenuItem("Sauvegarder sur disque");
 		version = new JMenuItem("Version");
@@ -141,74 +141,88 @@ public class Main {
 
 	public static void main(String[] args) {
 		Main a = new Main();
-
 	}
 
 	public class menuListener implements ActionListener {
-
 		public void actionPerformed(ActionEvent e) {
 			Object event = e.getSource();
 			if (event == create[0]) {
 				frame.setContentPane(ventePanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = ventePanel;
 			} else if (event == rapport[0]) {
 				frame.setContentPane(rapportVentePanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = rapportVentePanel;
 			} else if (event == create[1]) {
 				frame.setContentPane(achatPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = achatPanel;
 			} else if (event == rapport[1]) {
 				frame.setContentPane(rapportAchatPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = rapportAchatPanel;
 			} else if (event == create[2]) {
 				frame.setContentPane(paiementPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = paiementPanel;
 			} else if (event == rapport[2]) {
 				frame.setContentPane(rapportPaiementPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = rapportPaiementPanel;
 			} else if (event == create[3]) {
 				frame.setContentPane(recuPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = recuPanel;
 			} else if (event == rapport[3]) {
 				frame.setContentPane(rapportRecuPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = rapportRecuPanel;
 			} else if (event == create[4]) {
 				frame.setContentPane(clientPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = clientPanel;
 			} else if (event == rapport[4]) {
 				frame.setContentPane(rapportClientPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = rapportClientPanel;
 			} else if (event == create[5]) {
 				frame.setContentPane(fournisseurPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = fournisseurPanel;
 			} else if (event == rapport[5]) {
 				frame.setContentPane(rapportFournisseurPanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = rapportFournisseurPanel;
 			} else if (event == create[6]) {
 				frame.setContentPane(articlePanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = articlePanel;
 			}  else if (event == rapport[6]) {
 				frame.setContentPane(rapportArticlePanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = rapportArticlePanel;
+
 			} 
 			else if (event == create[7]) {
 				frame.setContentPane(categoriePanel);
 				frame.validate();
 				frame.repaint();
+				currentPane = categoriePanel;
 			}
 		}
 

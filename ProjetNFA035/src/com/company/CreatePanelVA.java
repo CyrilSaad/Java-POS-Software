@@ -5,16 +5,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -29,15 +33,19 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class CreatePanelVA extends JPanel {
-	CreatePanelVA(String ss, String s) {
-
+	JButton creer, enregistrer, quitter;
+	JFrame frame;
+	String currentPane;
+	CreatePanelVA(String ss, String s, JFrame f) {
+		this.frame = f;
+		this.currentPane = ss;
 		JPanel parentPanel, buttonPanel;
 		JLabel Ventes = new JLabel("");
 
 		parentPanel = new JPanel();
 		parentPanel.setLayout(new BorderLayout());
 
-		JButton creer, enregistrer, quitter;
+		
 		DefaultComboBoxModel cbmod = new DefaultComboBoxModel();
 		JComboBox combobox = new JComboBox(cbmod);
 		combobox.setEditable(false);
@@ -45,7 +53,7 @@ public class CreatePanelVA extends JPanel {
 		creer = new JButton("Créer");
 		enregistrer = new JButton("Enregistrer");
 		quitter = new JButton("Quitter");
-	
+		quitter.addActionListener(new panelInitVA());
 		this.setLayout(new BorderLayout());
 
 		DefaultTableModel tabmod = new DefaultTableModel();
@@ -54,7 +62,7 @@ public class CreatePanelVA extends JPanel {
 		tabmod.addColumn("Quantité");
 		tabmod.addColumn(s+" Unit");
 		tabmod.addColumn(s+ " Total");
-		tabmod.addRow(tb);
+		for(int i=0; i<20; i++) tabmod.addRow(new Object[] {null,null,null,null});
 		JTable table = new JTable(tabmod);
 		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
 		Font font = new Font("Verdana", Font.PLAIN, 18);  
@@ -63,9 +71,9 @@ public class CreatePanelVA extends JPanel {
 		table.setBackground(Color.white);
 		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		table.setShowGrid(true);
-		table.setRowHeight(30);
+		table.setRowHeight(25);
 		
-		table.setGridColor(Color.blue);
+		table.setGridColor(Color.DARK_GRAY);
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();
@@ -94,11 +102,13 @@ public class CreatePanelVA extends JPanel {
 		for (int i = 0; i < 4; i++) {
 			textFields[i] = new JTextField(20);
 			textFields[i].setPreferredSize(new Dimension(500, 25));
-			if (i == 2)
-				continue;
-			else
 				textFields[i].setEditable(false);
 		}
+		//actionListeners
+		creer.addActionListener(new panelInitVA(textFields, this));
+		
+		
+		
 		JPanel pp = new JPanel();
 		pp.setLayout(new FlowLayout(FlowLayout.LEFT));
 		childDisplayPanel.setLayout(new GridBagLayout());
@@ -152,7 +162,6 @@ public class CreatePanelVA extends JPanel {
 		displayPanel.add(listScroller);
 
 		listScroller.setBorder(new EmptyBorder(0, 0, 10, 10));
-		// this.add(listScroller, BorderLayout.EAST);
 		this.setBorder(new EmptyBorder(10, 10, 10, 10));
 		this.setBorder(BorderFactory.createTitledBorder(new LineBorder(Color.BLACK, 1), "Infos " + ss + "s",
 				TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
@@ -163,5 +172,40 @@ public class CreatePanelVA extends JPanel {
 		// end of first panel
 
 	};
+	private class panelInitVA implements ActionListener {
+		boolean inCreation;
+		JTextField tf [];
+		JPanel panelVA;
+		panelInitVA(JTextField[] tf, JPanel pane) {
+			super();
+			this.tf = tf;
+			this.panelVA = pane;
+		}
+		public panelInitVA() {
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+	
+			Object eventSource = e.getSource();
+			
+			if(eventSource == creer) {
+				creer.setEnabled(false);
+				Transaction.noSerie++;
+				inCreation = true;
+				if(inCreation) {
+					for (int i = 0; i < tf.length; i++) {
+				tf[0].setText(Integer.toString(Transaction.noSerie));
+				
+				tf[2].setEditable(true); tf[2].setToolTipText("DD/MM/YYYY");
+				}//end of textfield init
+			   }	
+			} //Creer button 
+			
+			if(eventSource == quitter) {
+				frame.dispose();
+			}
+		}
+
+	}
 
 }

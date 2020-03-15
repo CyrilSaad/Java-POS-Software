@@ -8,7 +8,6 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	String description;
 	LocalDate dateTransaction ;
 	protected double montant = 0.0d;
-	
 	enum TypePaie {
 		CASH,
 		CHEQUE,
@@ -22,9 +21,8 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 		noTransaction = noSerie;
 	}
 	
-	public int compareTo(Object o) {
+	public int compareTo(Transaction t) {
 	 	int comp = 0;
-	 Transaction t = (Transaction) o;
 	 if(description.compareTo(t.description) == 1)  comp = 1;
 	 else if (dateTransaction.compareTo(t.dateTransaction) == 1)  comp = 1;
 	 else if(noTransaction > t.noTransaction)  comp =1;	 

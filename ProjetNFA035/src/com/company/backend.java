@@ -47,7 +47,7 @@ public class backend {
 	            }
 	        }
 
-	        clientList = new ArrayList();
+	        fournisseurList = new ArrayList();
 	        File fileFournisseurs = new File("C:\\javatest\\fournisseurs.out");
 	        if (fileFournisseurs.exists()) {
 	            try {

@@ -8,6 +8,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,27 +19,35 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class CreatePanelCompte extends JPanel {
-	CreatePanelCompte(String ss) {
-
+	public boolean isName(String name) {
+	    return name.matches("[a-zA-Z]+");
+	}
+	JTextField textFields[] = new JTextField[4];
+	JButton creer, enregistrer, quitter;
+	JFrame frame;
+	JComboBox villes;
+	JRadioButton actif, ferme, suspendu;
+	String currentPane;
+	CreatePanelCompte(String ss, JFrame f) {
+			this.currentPane = ss;
 			JPanel parentPanel, buttonPanel;
 			JLabel Ventes = new JLabel("");
-
+			this.frame = f;
 			parentPanel = new JPanel();
 			parentPanel.setLayout(new BorderLayout());
-
-			JButton creer, enregistrer, quitter;
-			
-		DefaultComboBoxModel<Ville> villesmod = new DefaultComboBoxModel();
-		JComboBox villes = new JComboBox(villesmod);
-		villes.setEditable(true);
+	
+		DefaultComboBoxModel<String> villesmod = new DefaultComboBoxModel<String>(Ville.villeNoms);
+		villes = new JComboBox(villesmod);
+		villes.setEditable(false);
 			villes.setPreferredSize(new Dimension(200, 25));
-			creer = new JButton("Créer");
-			enregistrer = new JButton("Enregistrer");
+			creer = new JButton("Créer"); creer.addActionListener(new panelInitCompte(textFields, this));
+			enregistrer = new JButton("Enregistrer"); enregistrer.addActionListener(new panelInitCompte(textFields, this));
 			quitter = new JButton("Quitter");
+			quitter.addActionListener(new panelInitCompte());
 			
-			JRadioButton actif = new JRadioButton("Actif", true);
-			JRadioButton ferme = new JRadioButton("Fermé");
-			JRadioButton suspendu = new JRadioButton("Suspendu");
+			 actif = new JRadioButton("Actif", true);
+			 ferme = new JRadioButton("Fermé");
+			 suspendu = new JRadioButton("Suspendu");
 			ButtonGroup bg = new ButtonGroup();
 			bg.add(actif);
 			bg.add(ferme);
@@ -56,7 +66,9 @@ public class CreatePanelCompte extends JPanel {
 			table.setFillsViewportHeight(true);
 			table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 			table.setShowGrid(true);
-			table.setGridColor(Color.blue);
+			table.setGridColor(Color.DARK_GRAY);
+			table.setRowHeight(25);
+			for(int i=0; i<20; i++) tabmod.addRow(new Object[] {null,null,null,null});
 			JScrollPane scrollPane = new JScrollPane(table);
 
 			buttonPanel = new JPanel();
@@ -77,15 +89,6 @@ public class CreatePanelCompte extends JPanel {
 			displayPanel.setLayout(new GridLayout(1, 2));
 			JPanel childDisplayPanel = new JPanel();
 
-			JTextField textFields[] = new JTextField[4];
-			for (int i = 0; i < 4; i++) {
-				textFields[i] = new JTextField(20);
-				textFields[i].setPreferredSize(new Dimension(500, 25));
-				if (i == 1 || i==2)
-					continue;
-				else
-					textFields[i].setEditable(false);
-			}
 			JPanel pp = new JPanel();
 			pp.setLayout(new FlowLayout(FlowLayout.LEFT));
 			childDisplayPanel.setLayout(new GridBagLayout());
@@ -93,16 +96,20 @@ public class CreatePanelCompte extends JPanel {
 			gbc.fill = GridBagConstraints.BOTH;
 			gbc.insets = new Insets(10, 10, 10, 10);
 			
+			for (int i = 0; i < 4; i++) {
+				textFields[i] = new JTextField(20);
+				textFields[i].setPreferredSize(new Dimension(500, 25));
+				textFields[i].setEditable(false);
+			}
 			
-			
-				JLabel noVente = new JLabel("No. Client:");
+				JLabel noVente = new JLabel("No. "+ss+":");
 				gbc.gridx = 0; gbc.gridy = 0;
 				childDisplayPanel.add(noVente, gbc);
 				
 				gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 3;
 				childDisplayPanel.add(textFields[0], gbc);
 				
-				JLabel description = new JLabel("Nom Client: ");
+				JLabel description = new JLabel("Nom "+ss+":");
 				gbc.gridx = 0; gbc.gridy = 1;
 				childDisplayPanel.add(description, gbc);
 				gbc.gridx = 1 ; gbc.gridy = 1;
@@ -121,7 +128,7 @@ public class CreatePanelCompte extends JPanel {
 			childDisplayPanel.add(montantVente, gbc);
 			
 			gbc.gridx = 1; gbc.gridy = 4;
-			childDisplayPanel.add(textFields[3], gbc);
+			childDisplayPanel.add(textFields[2], gbc);
 			
 			JLabel etatCompte = new JLabel("Etat Compte: ");
 			gbc.gridx = 0; gbc.gridy = 5;
@@ -159,4 +166,54 @@ public class CreatePanelCompte extends JPanel {
 			// end of first panel
 
 		}
+	private class panelInitCompte implements ActionListener {
+		JTextField tf [];
+		JPanel panelVA;
+		panelInitCompte(JTextField[] tf, JPanel pane) {
+			super();
+			this.tf = tf;
+			this.panelVA = pane;
+		}
+		public panelInitCompte() {
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+	
+			Object eventSource = e.getSource();
+			
+			if(eventSource == creer) {
+				creer.setEnabled(false);
+				textFields[0].setText(""+ Client.noCompte);
+				textFields[1].setEditable(true); 
+				textFields[2].setText(""+ 0);
+//				villes.setEditable(true);
+				
+				
+			   } //Creer button 
+			
+			if(eventSource == quitter) {
+				frame.dispose();
+			}
+			
+			if(eventSource == enregistrer) {
+				String name = textFields[1].getText();
+				String nomVille = villes.getSelectedItem().toString();
+				Ville selectedVille = Ville.findVille(nomVille);
+				
+				boolean nameErr = isName(name);
+				if(!nameErr && !name.isEmpty()) 
+					JOptionPane.showMessageDialog(null, "Le champ du nom doit uniquement contenir des lettres!");
+				else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ du nom ne doit pas être vide!");
+				else {
+					creer.setEnabled(true);
+					JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
+					for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+					actif.setSelected(true);
+					Files.createClient( Client.noCompte, new Client(name, selectedVille));
+					
+				}
+			}
+		}
+
+	}
 }

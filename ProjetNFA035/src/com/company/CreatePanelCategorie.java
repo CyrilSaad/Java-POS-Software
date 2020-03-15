@@ -14,6 +14,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -28,8 +29,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class CreatePanelCategorie extends JPanel{
-	CreatePanelCategorie(String ss) {
-
+	JFrame frame;
+	CreatePanelCategorie(String ss, JFrame frame) {
+		this.frame = frame;
 		JPanel parentPanel, buttonPanel;
 		JLabel Ventes = new JLabel("");
 

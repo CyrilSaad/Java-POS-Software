@@ -15,6 +15,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -30,11 +31,13 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class CreatePanelRP extends JPanel {
-	 CreatePanelRP(String ss, String tag) {
-
+	JFrame frame;
+	 CreatePanelRP(String ss, String tag, JFrame f) {
+		 	
 			JPanel parentPanel, buttonPanel;
 			JLabel Ventes = new JLabel("");
-
+			this.frame = f;
+			
 			parentPanel = new JPanel();
 			parentPanel.setLayout(new BorderLayout());
 
@@ -117,28 +120,28 @@ public class CreatePanelRP extends JPanel {
 			
 			
 			
-				JLabel noVente = new JLabel("No. Client:");
+				JLabel noVente = new JLabel("No. "+ss+":");
 				gbc.gridx = 0; gbc.gridy = 0;
 				childDisplayPanel.add(noVente, gbc);
 				
 				gbc.gridx = 1; gbc.gridy = 0; gbc.weightx = 3;
 				childDisplayPanel.add(textFields[0], gbc);
 				
-				JLabel description = new JLabel("Nom Client: ");
+				JLabel description = new JLabel("Nom "+ss+":");
 				gbc.gridx = 0; gbc.gridy = 1;
 				childDisplayPanel.add(description, gbc);
 				gbc.gridx = 1 ; gbc.gridy = 1;
 				childDisplayPanel.add(textFields[1], gbc);
 		
-			JLabel dateVente = new JLabel("Ville: ");
+			JLabel dateVente = new JLabel("Date "+ss+":");
 			gbc.gridx = 0; gbc.gridy = 3;
 			childDisplayPanel.add(dateVente, gbc);
 			
 			gbc.gridx = 1 ; gbc.gridy = 3;
-			childDisplayPanel.add(villes, gbc);
+			childDisplayPanel.add(textFields[2], gbc);
 			
 			
-			JLabel montantVente = new JLabel("Solde: ");
+			JLabel montantVente = new JLabel("Montant "+ss+":");
 			gbc.gridx = 0; gbc.gridy = 4;
 			childDisplayPanel.add(montantVente, gbc);
 			

@@ -3,7 +3,7 @@ import java.util.*;
 import java.io.*;
 
 
-public abstract class Compte implements Serializable, Comparable {
+public abstract class Compte implements Serializable, Comparable<Compte> {
 	enum EtatCompte {
 		ACTIF,
 		FERME,
@@ -11,7 +11,7 @@ public abstract class Compte implements Serializable, Comparable {
 	}
 	
 	static int noSerie = 0;
-	int noCompte;
+	static int noCompte;
 	String nomCompte;
 	Ville ville;
 	double solde = 0.0d;
@@ -20,6 +20,7 @@ public abstract class Compte implements Serializable, Comparable {
 	Compte(String s, Ville v){
 		nomCompte = s;
 		ville 	= v;
+		noSerie++;
 	}
 	
 	public void setEtat(EtatCompte e) {
@@ -28,9 +29,8 @@ public abstract class Compte implements Serializable, Comparable {
 	abstract void debiter(double d);
 	abstract void crediter(double d);
 	
-	public int compareTo (Object o) {
+	public int compareTo (Compte c) {
 		int comp = 0 ;
-		Compte c = (Compte) o;
 		if(nomCompte.compareTo(c.nomCompte) == 1) comp = 1;
 		else if ( nomCompte.compareTo(c.nomCompte) == -1) comp = -1;
 		return comp;
