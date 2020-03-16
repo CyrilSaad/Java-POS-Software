@@ -21,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -32,10 +33,14 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.company.Compte.EtatCompte;
+
 public class CreatePanelVA extends JPanel {
 	JButton creer, enregistrer, quitter;
 	JFrame frame;
 	String currentPane;
+	JTextField textFields[];
+			
 	CreatePanelVA(String ss, String s, JFrame f) {
 		this.frame = f;
 		this.currentPane = ss;
@@ -98,7 +103,7 @@ public class CreatePanelVA extends JPanel {
 		displayPanel.setLayout(new GridLayout(1, 2));
 		JPanel childDisplayPanel = new JPanel();
 
-		JTextField textFields[] = new JTextField[4];
+		 textFields = new JTextField[4];
 		for (int i = 0; i < 4; i++) {
 			textFields[i] = new JTextField(20);
 			textFields[i].setPreferredSize(new Dimension(500, 25));
@@ -207,5 +212,104 @@ public class CreatePanelVA extends JPanel {
 		}
 
 	}
+//	private class panelInitCompte implements ActionListener {
+//		JTextField tf [];
+//		JPanel panelVA;
+//		panelInitCompte(JTextField[] tf, JPanel pane) {
+//			super();
+//			this.tf = tf;
+//			this.panelVA = pane;
+//		}
+//		public panelInitCompte() {
+//		}
+//		@Override
+//		public void actionPerformed(ActionEvent e) {
+//	
+//			Object eventSource = e.getSource();
+//			if(currentPane == "Vente") {
+//				if(eventSource == creer) {
+//					creer.setEnabled(false);
+//					textFields[0].setText(""+ (Client.noSerie+1));
+//					textFields[1].setEditable(true); 
+//					textFields[2].setText(""+ 0);
+//					enregistrer.setEnabled(true);
+//
+//					
+//					
+//				   } //Creer button 
+//				
+//				if(eventSource == quitter) {
+//					frame.dispose();
+//				}
+//				
+//				if(eventSource == enregistrer) {
+//					String name = textFields[1].getText();
+//					String nomVille = villes.getSelectedItem().toString();
+//					Ville selectedVille = Ville.findVille(nomVille);
+//					boolean nameErr = isName(name);
+//					if(!nameErr && !name.isEmpty()) 
+//						JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' doit uniquement contenir des lettres!");
+//					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' ne doit pas être vide!");
+//					else {
+//						Client c = new Client(name, selectedVille);
+//						String etatCompte = bg.getSelection().getActionCommand();
+//						switch(etatCompte) {
+//						case "ACTIF": c.setEtat(EtatCompte.ACTIF); break;
+//						case "SUSPENDU": c.setEtat(EtatCompte.SUSPENDU); break;
+//						case "FERME": c.setEtat(EtatCompte.FERME); break;
+//						}
+//						creer.setEnabled(true);
+//						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
+//						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+//						actif.setSelected(true);
+//						Files.createClient( c.noCompte, c);
+//						enregistrer.setEnabled(false);
+//					}
+//				}
+//			} //CreerClient
+//			
+//			else if(currentPane == "Achat") {
+//				if(eventSource == creer) {
+//					creer.setEnabled(false);
+//					textFields[0].setText(""+ (Fournisseur.noSerie+1));
+//					textFields[1].setEditable(true); 
+//					textFields[2].setText(""+ 0);
+//					enregistrer.setEnabled(true);
+//					frame.getJMenuBar().disable();
+//					
+//				   } //Creer button 
+//				
+//				if(eventSource == quitter) {
+//					frame.dispose();
+//				}
+//				
+//				if(eventSource == enregistrer) {
+//					String name = textFields[1].getText();
+//
+//			;
+//					if( !name.isEmpty()) 
+//						JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' doit uniquement contenir des lettres!");
+//					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' ne doit pas être vide!");
+//					else {
+//						Fournisseur f = new Fournisseur(name, selectedVille);
+//						String etatCompte = bg.getSelection().getActionCommand();
+//						switch(etatCompte) {
+//						case "ACTIF": f.setEtat(EtatCompte.ACTIF); break;
+//						case "SUSPENDU": f.setEtat(EtatCompte.SUSPENDU); break;
+//						case "FERME": f.setEtat(EtatCompte.FERME); break;
+//						}
+//						creer.setEnabled(true);
+//						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
+//						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+//						actif.setSelected(true);
+//						Files.createFournisseur( f.noCompte, f);
+//						enregistrer.setEnabled(false);
+//				
+//					}
+//				}
+//			
+//			}
+//		}
 
-}
+	}
+

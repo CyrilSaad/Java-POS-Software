@@ -13,11 +13,14 @@ import javafx.scene.layout.Border;
 import java.awt.*;
 import java.awt.TextArea;
 import java.awt.event.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Main {
-	 JFrame frame = new JFrame("Gestion de transactions commerciales");   
+	String versionNumber = "0.0.1";
+	JFrame frame = new JFrame("Gestion de transactions commerciales");   
 	JPanel ventePanel = new CreatePanelVA("Vente", "Prix", frame);
 	JPanel achatPanel = new CreatePanelVA("Achat", "Cout", frame);
 	JPanel recuPanel = new CreatePanelRP("Reçu", "Client", frame);
@@ -62,8 +65,8 @@ public class Main {
 		currentPane = new JPanel();
 		charger = new JMenuItem("Charger sur disque");
 		save = new JMenuItem("Sauvegarder sur disque");
-		version = new JMenuItem("Version");
-		quitter = new JMenuItem("Quitter");
+		version = new JMenuItem("Version"); version.addActionListener(new menuListener());
+		quitter = new JMenuItem("Quitter"); quitter.addActionListener(new menuListener());
 
 		clientMenu = new JMenu("Clients");
 		venteMenu = new JMenu("Ventes");
@@ -97,7 +100,6 @@ public class Main {
 		compteMenu = new JMenu("Comptes");
 		compteMenu.add(clientMenu);
 		compteMenu.add(fournisseurMenu);
-//		compteMenu.add(ville);
 
 		addModifier(clientMenu, create[4], rapport[4]);
 		create[4].addActionListener(new menuListener());
@@ -109,7 +111,7 @@ public class Main {
 
 		stockMenu = new JMenu("Stock");
 		JMenu articleMenu = new JMenu("Articles");
-		JMenu categorieMenu = new JMenu("Categories Articles");
+		JMenu categorieMenu = new JMenu("Catégories Articles");
 		stockMenu.add(articleMenu);
 		stockMenu.add(categorieMenu);
 
@@ -224,8 +226,16 @@ public class Main {
 				frame.repaint();
 				currentPane = categoriePanel;
 			}
+			else if (event == quitter) frame.dispose();
+			else if (event == version) { 
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM");
+				LocalDateTime now = LocalDateTime.now();
+				JOptionPane.showMessageDialog(null, (dtf.format(now)+ " " +versionNumber),"Version", 1);
+			}	
 		}
 
 	}
-
+	public static boolean isName(String name) {
+	    return name.matches("^[a-zA-Z_ ]*$");
+	}
 }

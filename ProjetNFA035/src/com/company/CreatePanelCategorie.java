@@ -3,33 +3,19 @@ package com.company;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
+import javax.swing.*;
+import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
+
+import com.company.Compte.EtatCompte;
 
 public class CreatePanelCategorie extends JPanel{
 	JFrame frame;
+	JTextField textFields[];
+	JButton creer, enregistrer, quitter;
 	CreatePanelCategorie(String ss, JFrame frame) {
 		this.frame = frame;
 		JPanel parentPanel, buttonPanel;
@@ -38,19 +24,19 @@ public class CreatePanelCategorie extends JPanel{
 		parentPanel = new JPanel();
 		parentPanel.setLayout(new BorderLayout());
 
-		JButton creer, enregistrer, quitter;
+		
 		DefaultComboBoxModel cbmod = new DefaultComboBoxModel();
 		JComboBox combobox = new JComboBox(cbmod);
 		combobox.setEditable(false);
 		combobox.setPreferredSize(new Dimension(200, 25));
-		creer = new JButton("Créer");
-		enregistrer = new JButton("Enregistrer");
-		quitter = new JButton("Quitter");
+		creer = new JButton("Créer"); creer.addActionListener(new initPanelCategorie(textFields));
+		enregistrer = new JButton("Enregistrer"); enregistrer.addActionListener(new initPanelCategorie(textFields));
+		quitter = new JButton("Quitter"); quitter.addActionListener(new initPanelCategorie());
 	
 		this.setLayout(new BorderLayout());
 
 		DefaultTableModel tabmod = new DefaultTableModel();
-
+		for(int i=0; i<20; i++) tabmod.addRow(new Object[] {null,null,null,null});
 		tabmod.addColumn("No. Article");
 		tabmod.addColumn("Nom Article");
 		tabmod.addColumn("Quantité Stock");
@@ -63,7 +49,9 @@ public class CreatePanelCategorie extends JPanel{
 		table.setFillsViewportHeight(true);
 		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
 		table.setShowGrid(true);
-		table.setGridColor(Color.blue);
+		table.setGridColor(Color.DARK_GRAY);
+		table.setRowHeight(25);
+		table.getTableHeader().setReorderingAllowed(false);
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();
@@ -84,14 +72,11 @@ public class CreatePanelCategorie extends JPanel{
 		displayPanel.setLayout(new GridLayout(1, 2));
 		JPanel childDisplayPanel = new JPanel();
 
-		JTextField textFields[] = new JTextField[4];
+		 textFields = new JTextField[4];
 		for (int i = 0; i < 4; i++) {
 			textFields[i] = new JTextField(20);
 			textFields[i].setPreferredSize(new Dimension(500, 25));
-			if (i == 1)
-				continue;
-			else
-				textFields[i].setEditable(false);
+			textFields[i].setEditable(false);
 		}
 		JPanel pp = new JPanel();
 		pp.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -152,5 +137,48 @@ public class CreatePanelCategorie extends JPanel{
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
 
+	}
+	private class initPanelCategorie implements ActionListener {
+		JTextField tf [];
+		initPanelCategorie(JTextField[] tf) {
+			super();
+			this.tf = tf;
+		}
+		initPanelCategorie() {
+			
+		}
+		@Override
+		public void actionPerformed(ActionEvent e) {
+	
+			Object eventSource = e.getSource();
+				if(eventSource == creer) {
+					creer.setEnabled(false);
+					textFields[0].setText(""+ (Categorie.noSerie+1));
+					textFields[1].setEditable(true); 
+					enregistrer.setEnabled(true);
+
+				   } //Creer button 
+				
+				if(eventSource == quitter) {
+					frame.dispose();
+				}
+				
+				if(eventSource == enregistrer) {
+					String name = textFields[1].getText();
+					boolean nameErr = Main.isName(name);
+					if(!nameErr && !name.isEmpty()) 
+						JOptionPane.showMessageDialog(null, "Le champ 'Nom Catégorie' doit uniquement contenir des lettres!");
+					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Catégorie' ne doit pas être vide!");
+					else {
+						Categorie c = new Categorie(name);
+					enregistrer.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"Catégorie enregistrée avec succès", "Enregistrement du catégorie",JOptionPane.INFORMATION_MESSAGE);
+						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+						Files.categorieMap.put( c.noCategorie, c);
+						enregistrer.setEnabled(false);
+						creer.setEnabled(true);
+					}
+				}
+			}
 	}
 }

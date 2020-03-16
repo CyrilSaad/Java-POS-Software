@@ -12,7 +12,12 @@ public class Article implements Serializable, Comparable {
 	double prixVenteParUnite;
 	double coutAchatParUnite;
 	double tauxProfit;
-	
+	Article(String name, Double profit) {
+		noSerie++;
+		this.nomArticle = name;
+		this.tauxProfit = tauxProfit;
+		noArticle = noSerie;
+	}
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;

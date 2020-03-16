@@ -18,16 +18,17 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.company.Compte.EtatCompte;
+
 public class CreatePanelCompte extends JPanel {
-	public boolean isName(String name) {
-	    return name.matches("[a-zA-Z]+");
-	}
+
 	JTextField textFields[] = new JTextField[4];
 	JButton creer, enregistrer, quitter;
 	JFrame frame;
 	JComboBox villes;
 	JRadioButton actif, ferme, suspendu;
 	String currentPane;
+	ButtonGroup bg;
 	CreatePanelCompte(String ss, JFrame f) {
 			this.currentPane = ss;
 			JPanel parentPanel, buttonPanel;
@@ -45,10 +46,10 @@ public class CreatePanelCompte extends JPanel {
 			quitter = new JButton("Quitter");
 			quitter.addActionListener(new panelInitCompte());
 			
-			 actif = new JRadioButton("Actif", true);
-			 ferme = new JRadioButton("Fermé");
-			 suspendu = new JRadioButton("Suspendu");
-			ButtonGroup bg = new ButtonGroup();
+			 actif = new JRadioButton("Actif", true); actif.setActionCommand("ACTIF");
+			 ferme = new JRadioButton("Fermé");	 ferme.setActionCommand("FERME");
+			 suspendu = new JRadioButton("Suspendu"); suspendu.setActionCommand("SUSPENDU");
+			 bg = new ButtonGroup();
 			bg.add(actif);
 			bg.add(ferme);
 			bg.add(suspendu);
@@ -180,38 +181,89 @@ public class CreatePanelCompte extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 	
 			Object eventSource = e.getSource();
-			
-			if(eventSource == creer) {
-				creer.setEnabled(false);
-				textFields[0].setText(""+ Client.noCompte);
-				textFields[1].setEditable(true); 
-				textFields[2].setText(""+ 0);
-//				villes.setEditable(true);
-				
-				
-			   } //Creer button 
-			
-			if(eventSource == quitter) {
-				frame.dispose();
-			}
-			
-			if(eventSource == enregistrer) {
-				String name = textFields[1].getText();
-				String nomVille = villes.getSelectedItem().toString();
-				Ville selectedVille = Ville.findVille(nomVille);
-				
-				boolean nameErr = isName(name);
-				if(!nameErr && !name.isEmpty()) 
-					JOptionPane.showMessageDialog(null, "Le champ du nom doit uniquement contenir des lettres!");
-				else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ du nom ne doit pas être vide!");
-				else {
-					creer.setEnabled(true);
-					JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
-					for(int i=0; i<textFields.length; i++) textFields[i].setText("");
-					actif.setSelected(true);
-					Files.createClient( Client.noCompte, new Client(name, selectedVille));
+			if(currentPane == "Client") {
+				if(eventSource == creer) {
+					creer.setEnabled(false);
+					textFields[0].setText(""+ (Compte.noSerie+1));
+					textFields[1].setEditable(true); 
+					textFields[2].setText(""+ 0);
+					enregistrer.setEnabled(true);
+
 					
+					
+				   } //Creer button 
+				
+				if(eventSource == quitter) {
+					frame.dispose();
 				}
+				
+				if(eventSource == enregistrer) {
+					String name = textFields[1].getText();
+					String nomVille = villes.getSelectedItem().toString();
+					Ville selectedVille = Ville.findVille(nomVille);
+					boolean nameErr = Main.isName(name);
+					if(!nameErr && !name.isEmpty()) 
+						JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' doit uniquement contenir des lettres!","Erreur", JOptionPane.ERROR_MESSAGE);
+					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' ne doit pas être vide!","Erreur", JOptionPane.ERROR_MESSAGE);
+					else {
+						Client c = new Client(name, selectedVille);
+						String etatCompte = bg.getSelection().getActionCommand();
+						switch(etatCompte) {
+						case "ACTIF": c.setEtat(EtatCompte.ACTIF); break;
+						case "SUSPENDU": c.setEtat(EtatCompte.SUSPENDU); break;
+						case "FERME": c.setEtat(EtatCompte.FERME); break;
+						}
+						creer.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
+						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+						actif.setSelected(true);
+						Files.compteMap.put( c.noCompte, c);
+						enregistrer.setEnabled(false);
+					}
+				}
+			} //CreerClient
+			
+			else if(currentPane == "Fournisseur") {
+				if(eventSource == creer) {
+					creer.setEnabled(false);
+					textFields[0].setText(""+ (Compte.noSerie+1));
+					textFields[1].setEditable(true); 
+					textFields[2].setText(""+ 0);
+					enregistrer.setEnabled(true);
+					frame.getJMenuBar().disable();
+					
+				   } //Creer button 
+				
+				if(eventSource == quitter) {
+					frame.dispose();
+				}
+				
+				if(eventSource == enregistrer) {
+					String name = textFields[1].getText();
+					String nomVille = villes.getSelectedItem().toString();
+					Ville selectedVille = Ville.findVille(nomVille);
+					boolean nameErr = Main.isName(name);
+					if(!nameErr && !name.isEmpty()) 
+						JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' doit uniquement contenir des lettres!","Erreur", JOptionPane.ERROR_MESSAGE);
+					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' ne doit pas être vide!","Erreur", JOptionPane.ERROR_MESSAGE);
+					else {
+						Fournisseur f = new Fournisseur(name, selectedVille);
+						String etatCompte = bg.getSelection().getActionCommand();
+						switch(etatCompte) {
+						case "ACTIF": f.setEtat(EtatCompte.ACTIF); break;
+						case "SUSPENDU": f.setEtat(EtatCompte.SUSPENDU); break;
+						case "FERME": f.setEtat(EtatCompte.FERME); break;
+						}
+						creer.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
+						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+						actif.setSelected(true);
+						Files.compteMap.put( f.noCompte, f);
+						enregistrer.setEnabled(false);
+				
+					}
+				}
+			
 			}
 		}
 

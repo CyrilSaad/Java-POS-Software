@@ -11,7 +11,7 @@ public abstract class Compte implements Serializable, Comparable<Compte> {
 	}
 	
 	static int noSerie = 0;
-	static int noCompte;
+	 int noCompte;
 	String nomCompte;
 	Ville ville;
 	double solde = 0.0d;
@@ -21,6 +21,7 @@ public abstract class Compte implements Serializable, Comparable<Compte> {
 		nomCompte = s;
 		ville 	= v;
 		noSerie++;
+		noCompte = noSerie;
 	}
 	
 	public void setEtat(EtatCompte e) {
