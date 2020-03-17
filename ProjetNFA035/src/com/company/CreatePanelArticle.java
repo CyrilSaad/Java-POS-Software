@@ -47,6 +47,7 @@ public class CreatePanelArticle extends JPanel {
 		combobox.setPreferredSize(new Dimension(200, 25));
 		creer = new JButton("Créer"); creer.addActionListener(new initPanelArticle(textFields));
 		enregistrer = new JButton("Enregistrer"); enregistrer.setEnabled(false); enregistrer.addActionListener(new initPanelArticle(textFields));
+		enregistrer.setEnabled(false);
 		quitter = new JButton("Quitter"); quitter.addActionListener(new initPanelArticle());
 	
 		this.setLayout(new BorderLayout());
@@ -216,16 +217,16 @@ public class CreatePanelArticle extends JPanel {
 					if(profitErr)
 					if(!nameErr && !name.isEmpty()) 
 						JOptionPane.showMessageDialog(null, "Le champ 'Nom Article' doit uniquement contenir des lettres!","Erreur", JOptionPane.ERROR_MESSAGE);
-					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Article' ne doit pas être vide!","Erreur", JOptionPane.ERROR_MESSAGE);
-					else if(profitText.isEmpty()) JOptionPane.showMessageDialog(null, "Veuillez préciser un taux de profit","Erreur", JOptionPane.ERROR_MESSAGE);
+					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Article' ne doit pas être vide!","Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
+					else if(profitText.isEmpty()) JOptionPane.showMessageDialog(null, "Veuillez préciser un taux de profit","Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
 					else if((!profitErr && !profitText.isEmpty() ) || !(profit>=0 && profit <=1)) JOptionPane.showMessageDialog(null, "Le taux de profit est incorrect!","Erreur", JOptionPane.ERROR_MESSAGE);
 				
 					else  {
-						Article c = new Article(name, profit);
+						Article a = new Article(name, profit);
 					enregistrer.setEnabled(true);
 						JOptionPane.showMessageDialog(null,"Article enregistré avec succès", "Enregistrement de l'article",JOptionPane.INFORMATION_MESSAGE);
 						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
-						Files.articleMap.put( c.noArticle, c);
+						Files.createArticle(a.noArticle, a);
 						enregistrer.setEnabled(false);
 						creer.setEnabled(true);
 					}

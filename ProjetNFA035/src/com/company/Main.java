@@ -21,8 +21,8 @@ import java.util.HashMap;
 public class Main {
 	String versionNumber = "0.0.1";
 	JFrame frame = new JFrame("Gestion de transactions commerciales");   
-	JPanel ventePanel = new CreatePanelVA("Vente", "Prix", frame);
-	JPanel achatPanel = new CreatePanelVA("Achat", "Cout", frame);
+	JPanel ventePanel = new CreatePanelVA("Vente", "Prix", "Client",frame);
+	JPanel achatPanel = new CreatePanelVA("Achat", "Cout", "Fournisseur", frame);
 	JPanel recuPanel = new CreatePanelRP("Reçu", "Client", frame);
 	JPanel paiementPanel = new CreatePanelRP("Paiement", "Fournisseur", frame);
 	JPanel clientPanel = new CreatePanelCompte("Client", frame);

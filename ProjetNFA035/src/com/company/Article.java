@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public class Article implements Serializable, Comparable {
 	
-	static int noSerie = 0;
+	static int noSerie = Files.getArticle().size();
 	int noArticle;
 	String nomArticle;
 	int qteStock;

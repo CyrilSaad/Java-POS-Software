@@ -9,7 +9,7 @@ public class Achat extends TransactionFournisseur {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Achat(LocalDate d, double m, Fournisseur f) {
+	Achat(String d, double m, Fournisseur f) {
 		super(d, m, f);
 		// TODO Auto-generated constructor stub
 	}

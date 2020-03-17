@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 abstract class TransactionFournisseur extends Transaction {
 	Fournisseur fournisseur;
-	TransactionFournisseur(LocalDate d, double m,Fournisseur f) {
+	TransactionFournisseur(String d, double m,Fournisseur f) {
 		super(d,m);
 		fournisseur = f;
 	}

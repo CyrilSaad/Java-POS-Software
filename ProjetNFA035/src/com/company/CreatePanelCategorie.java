@@ -31,6 +31,7 @@ public class CreatePanelCategorie extends JPanel{
 		combobox.setPreferredSize(new Dimension(200, 25));
 		creer = new JButton("Créer"); creer.addActionListener(new initPanelCategorie(textFields));
 		enregistrer = new JButton("Enregistrer"); enregistrer.addActionListener(new initPanelCategorie(textFields));
+		enregistrer.setEnabled(false);
 		quitter = new JButton("Quitter"); quitter.addActionListener(new initPanelCategorie());
 	
 		this.setLayout(new BorderLayout());
@@ -168,13 +169,13 @@ public class CreatePanelCategorie extends JPanel{
 					boolean nameErr = Main.isName(name);
 					if(!nameErr && !name.isEmpty()) 
 						JOptionPane.showMessageDialog(null, "Le champ 'Nom Catégorie' doit uniquement contenir des lettres!");
-					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Catégorie' ne doit pas être vide!");
+					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Catégorie' ne doit pas être vide!", "Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
 					else {
 						Categorie c = new Categorie(name);
 					enregistrer.setEnabled(true);
 						JOptionPane.showMessageDialog(null,"Catégorie enregistrée avec succès", "Enregistrement du catégorie",JOptionPane.INFORMATION_MESSAGE);
 						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
-						Files.categorieMap.put( c.noCategorie, c);
+						Files.createCategorie(c.noCategorie, c);
 						enregistrer.setEnabled(false);
 						creer.setEnabled(true);
 					}

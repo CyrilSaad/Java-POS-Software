@@ -1,8 +1,9 @@
 package com.company;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Ville implements Comparable<Ville> {
+public class Ville implements Serializable, Comparable<Ville> {
 	static int noSerie = 0;
 	int noVille;
 	String nomVille;
@@ -10,11 +11,12 @@ public class Ville implements Comparable<Ville> {
 			"Zahlé", "Baabda", "Zgharta", "Baalbek", "Aley", "Byblos", "Rayak", "Marjayoun", 
 			"Amioun", "Jezzine", "Rachaya", "Hermel", "Batroun", "Joub Jenin" };
 	 static Ville villes [] = new Ville[villeNoms.length];
-	Ville(String nom, int noVille) {
+	Ville(String nom) {
 		noSerie++;
-		noVille = noSerie;
+		
 		for(int i=0; i<villeNoms.length; i++) {
-			villes[i] = new Ville(villeNoms[i], noVille);	
+			villes[i] = new Ville(villeNoms[i]);	
+			noVille = noSerie;
 		}
 	}
 	static Ville findVille(String s) {

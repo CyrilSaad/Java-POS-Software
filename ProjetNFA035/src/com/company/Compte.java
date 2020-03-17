@@ -4,13 +4,13 @@ import java.io.*;
 
 
 public abstract class Compte implements Serializable, Comparable<Compte> {
-	enum EtatCompte {
+	enum EtatCompte implements Serializable {
 		ACTIF,
 		FERME,
 		SUSPENDU
 	}
 	
-	static int noSerie = 0;
+	static int noSerie = Files.ComptesSize();
 	 int noCompte;
 	String nomCompte;
 	Ville ville;

@@ -41,7 +41,7 @@ public class CreatePanelVA extends JPanel {
 	String currentPane;
 	JTextField textFields[];
 			
-	CreatePanelVA(String ss, String s, JFrame f) {
+	CreatePanelVA(String ss, String s, String cbLabel,JFrame f) {
 		this.frame = f;
 		this.currentPane = ss;
 		JPanel parentPanel, buttonPanel;
@@ -56,14 +56,15 @@ public class CreatePanelVA extends JPanel {
 		combobox.setEditable(false);
 		combobox.setPreferredSize(new Dimension(200, 25));
 		creer = new JButton("Créer");
-		enregistrer = new JButton("Enregistrer");
-		quitter = new JButton("Quitter");
+		enregistrer = new JButton("Enregistrer"); enregistrer.addActionListener(new panelInitVA(textFields)); 
+		enregistrer.setEnabled(false);
+		quitter = new JButton("Quitter"); 		creer.addActionListener(new panelInitVA(textFields));
 		quitter.addActionListener(new panelInitVA());
 		this.setLayout(new BorderLayout());
 
 		DefaultTableModel tabmod = new DefaultTableModel();
 		String tb[] =  {"ok", "yo", "deal", "Haha"};
-		tabmod.addColumn("Achat");
+		tabmod.addColumn("Article");
 		tabmod.addColumn("Quantité");
 		tabmod.addColumn(s+" Unit");
 		tabmod.addColumn(s+ " Total");
@@ -93,7 +94,7 @@ public class CreatePanelVA extends JPanel {
 		buttonChildPanel.add(quitter);
 		buttonPanel.add(buttonChildPanel, BorderLayout.WEST);
 		JPanel cbPan = new JPanel();
-		JLabel choirsirClient = new JLabel("Choisir Client: ");
+		JLabel choirsirClient = new JLabel("Choisir " + cbLabel + ": ");
 		cbPan.add(choirsirClient);
 		cbPan.add(combobox);
 		buttonPanel.add(cbPan, BorderLayout.EAST);
@@ -109,11 +110,7 @@ public class CreatePanelVA extends JPanel {
 			textFields[i].setPreferredSize(new Dimension(500, 25));
 				textFields[i].setEditable(false);
 		}
-		//actionListeners
-		creer.addActionListener(new panelInitVA(textFields, this));
-		
-		
-		
+		textFields[2].setToolTipText("dd/MM/yyyy");
 		JPanel pp = new JPanel();
 		pp.setLayout(new FlowLayout(FlowLayout.LEFT));
 		childDisplayPanel.setLayout(new GridBagLayout());
@@ -177,14 +174,12 @@ public class CreatePanelVA extends JPanel {
 		// end of first panel
 
 	};
+
 	private class panelInitVA implements ActionListener {
-		boolean inCreation;
 		JTextField tf [];
-		JPanel panelVA;
-		panelInitVA(JTextField[] tf, JPanel pane) {
+		panelInitVA(JTextField[] tf) {
 			super();
 			this.tf = tf;
-			this.panelVA = pane;
 		}
 		public panelInitVA() {
 		}
@@ -192,124 +187,77 @@ public class CreatePanelVA extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 	
 			Object eventSource = e.getSource();
-			
-			if(eventSource == creer) {
-				creer.setEnabled(false);
-				Transaction.noSerie++;
-				inCreation = true;
-				if(inCreation) {
-					for (int i = 0; i < tf.length; i++) {
-				tf[0].setText(Integer.toString(Transaction.noSerie));
+			if(currentPane == "Vente") {
+				if(eventSource == creer) {
+					creer.setEnabled(false);
+					textFields[0].setText(""+ (Transaction.noSerie+1));
+					textFields[2].setEditable(true); 
+					textFields[3].setText(""+ 0);
+					enregistrer.setEnabled(true);
+
+					
+					
+				   } //Creer button 
 				
-				tf[2].setEditable(true); tf[2].setToolTipText("DD/MM/YYYY");
-				}//end of textfield init
-			   }	
-			} //Creer button 
+				if(eventSource == quitter) {
+					frame.dispose();
+				}
+				
+				if(eventSource == enregistrer) {
+					String dateString = textFields[2].getText();
+					boolean validDate = Pattern.isDate(dateString);
+					Client c =  new Client("deadad", Ville.findVille("Beirut") ); 
+					double montant = Double.parseDouble(textFields[3].getText());
+					if( !dateString.isEmpty() && !validDate) 
+						JOptionPane.showMessageDialog(null,	"Le format de la date n'est pas valide", "Date invalide", JOptionPane.ERROR_MESSAGE);
+					else if(dateString.isEmpty()) JOptionPane.showMessageDialog(null, "Veuillez préciser la date de la vente", "Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
+					else {
+						Vente a = new Vente(dateString, montant,c);
+						creer.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
+						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+						TransactionFiles.createVente(a.noTransaction, a);
+						enregistrer.setEnabled(false);
+					}
+				}
+			} //CreerClient
 			
-			if(eventSource == quitter) {
-				frame.dispose();
+			else if(currentPane == "Achat") {
+				if(eventSource == creer) {
+					creer.setEnabled(false);
+					textFields[0].setText(""+ (Transaction.noSerie+1));
+					textFields[2].setEditable(true); 
+					textFields[3].setText(""+ 0);
+					enregistrer.setEnabled(true);
+					
+				   } //Creer button 
+				
+				if(eventSource == quitter) {
+					frame.dispose();
+				}
+				
+				if(eventSource == enregistrer) {
+					String dateString = textFields[2].getText();
+					boolean validDate = Pattern.isDate(dateString);
+					Fournisseur f = new Fournisseur("deadad", Ville.findVille("Beirut")); 
+					double montant = Double.parseDouble(textFields[3].getText());
+					if( !dateString.isEmpty() && !validDate) 
+						JOptionPane.showMessageDialog(null,"Le format de la date n'est pas valide", "Date invalide", JOptionPane.WARNING_MESSAGE);
+					else if(dateString.isEmpty()) JOptionPane.showMessageDialog(null,"Veuillez préciser la date de l'achat","Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
+					else {
+						Achat a = new Achat(dateString, montant,f);
+						creer.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.OK_OPTION);
+						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
+						TransactionFiles.createAchat(a.noTransaction, a);
+						enregistrer.setEnabled(false);
+				
+					}
+				}
+			
 			}
 		}
 
+	  }
 	}
-//	private class panelInitCompte implements ActionListener {
-//		JTextField tf [];
-//		JPanel panelVA;
-//		panelInitCompte(JTextField[] tf, JPanel pane) {
-//			super();
-//			this.tf = tf;
-//			this.panelVA = pane;
-//		}
-//		public panelInitCompte() {
-//		}
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//	
-//			Object eventSource = e.getSource();
-//			if(currentPane == "Vente") {
-//				if(eventSource == creer) {
-//					creer.setEnabled(false);
-//					textFields[0].setText(""+ (Client.noSerie+1));
-//					textFields[1].setEditable(true); 
-//					textFields[2].setText(""+ 0);
-//					enregistrer.setEnabled(true);
 //
-//					
-//					
-//				   } //Creer button 
-//				
-//				if(eventSource == quitter) {
-//					frame.dispose();
-//				}
-//				
-//				if(eventSource == enregistrer) {
-//					String name = textFields[1].getText();
-//					String nomVille = villes.getSelectedItem().toString();
-//					Ville selectedVille = Ville.findVille(nomVille);
-//					boolean nameErr = isName(name);
-//					if(!nameErr && !name.isEmpty()) 
-//						JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' doit uniquement contenir des lettres!");
-//					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' ne doit pas être vide!");
-//					else {
-//						Client c = new Client(name, selectedVille);
-//						String etatCompte = bg.getSelection().getActionCommand();
-//						switch(etatCompte) {
-//						case "ACTIF": c.setEtat(EtatCompte.ACTIF); break;
-//						case "SUSPENDU": c.setEtat(EtatCompte.SUSPENDU); break;
-//						case "FERME": c.setEtat(EtatCompte.FERME); break;
-//						}
-//						creer.setEnabled(true);
-//						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
-//						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
-//						actif.setSelected(true);
-//						Files.createClient( c.noCompte, c);
-//						enregistrer.setEnabled(false);
-//					}
-//				}
-//			} //CreerClient
-//			
-//			else if(currentPane == "Achat") {
-//				if(eventSource == creer) {
-//					creer.setEnabled(false);
-//					textFields[0].setText(""+ (Fournisseur.noSerie+1));
-//					textFields[1].setEditable(true); 
-//					textFields[2].setText(""+ 0);
-//					enregistrer.setEnabled(true);
-//					frame.getJMenuBar().disable();
-//					
-//				   } //Creer button 
-//				
-//				if(eventSource == quitter) {
-//					frame.dispose();
-//				}
-//				
-//				if(eventSource == enregistrer) {
-//					String name = textFields[1].getText();
-//
-//			;
-//					if( !name.isEmpty()) 
-//						JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' doit uniquement contenir des lettres!");
-//					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' ne doit pas être vide!");
-//					else {
-//						Fournisseur f = new Fournisseur(name, selectedVille);
-//						String etatCompte = bg.getSelection().getActionCommand();
-//						switch(etatCompte) {
-//						case "ACTIF": f.setEtat(EtatCompte.ACTIF); break;
-//						case "SUSPENDU": f.setEtat(EtatCompte.SUSPENDU); break;
-//						case "FERME": f.setEtat(EtatCompte.FERME); break;
-//						}
-//						creer.setEnabled(true);
-//						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
-//						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
-//						actif.setSelected(true);
-//						Files.createFournisseur( f.noCompte, f);
-//						enregistrer.setEnabled(false);
-//				
-//					}
-//				}
-//			
-//			}
-//		}
-
-	}
-

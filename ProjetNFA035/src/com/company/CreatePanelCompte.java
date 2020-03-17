@@ -41,8 +41,9 @@ public class CreatePanelCompte extends JPanel {
 		villes = new JComboBox(villesmod);
 		villes.setEditable(false);
 			villes.setPreferredSize(new Dimension(200, 25));
-			creer = new JButton("Créer"); creer.addActionListener(new panelInitCompte(textFields, this));
-			enregistrer = new JButton("Enregistrer"); enregistrer.addActionListener(new panelInitCompte(textFields, this));
+			creer = new JButton("Créer"); creer.addActionListener(new panelInitCompte(textFields));
+			enregistrer = new JButton("Enregistrer"); enregistrer.addActionListener(new panelInitCompte(textFields));
+			enregistrer.setEnabled(false);
 			quitter = new JButton("Quitter");
 			quitter.addActionListener(new panelInitCompte());
 			
@@ -169,11 +170,9 @@ public class CreatePanelCompte extends JPanel {
 		}
 	private class panelInitCompte implements ActionListener {
 		JTextField tf [];
-		JPanel panelVA;
-		panelInitCompte(JTextField[] tf, JPanel pane) {
+		panelInitCompte(JTextField[] tf) {
 			super();
 			this.tf = tf;
-			this.panelVA = pane;
 		}
 		public panelInitCompte() {
 		}
@@ -204,7 +203,7 @@ public class CreatePanelCompte extends JPanel {
 					boolean nameErr = Main.isName(name);
 					if(!nameErr && !name.isEmpty()) 
 						JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' doit uniquement contenir des lettres!","Erreur", JOptionPane.ERROR_MESSAGE);
-					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' ne doit pas être vide!","Erreur", JOptionPane.ERROR_MESSAGE);
+					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Client' ne doit pas être vide!","Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
 					else {
 						Client c = new Client(name, selectedVille);
 						String etatCompte = bg.getSelection().getActionCommand();
@@ -217,7 +216,7 @@ public class CreatePanelCompte extends JPanel {
 						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
 						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
 						actif.setSelected(true);
-						Files.compteMap.put( c.noCompte, c);
+						Files.createClient(c.noCompte, c);
 						enregistrer.setEnabled(false);
 					}
 				}
@@ -230,7 +229,6 @@ public class CreatePanelCompte extends JPanel {
 					textFields[1].setEditable(true); 
 					textFields[2].setText(""+ 0);
 					enregistrer.setEnabled(true);
-					frame.getJMenuBar().disable();
 					
 				   } //Creer button 
 				
@@ -245,7 +243,7 @@ public class CreatePanelCompte extends JPanel {
 					boolean nameErr = Main.isName(name);
 					if(!nameErr && !name.isEmpty()) 
 						JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' doit uniquement contenir des lettres!","Erreur", JOptionPane.ERROR_MESSAGE);
-					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' ne doit pas être vide!","Erreur", JOptionPane.ERROR_MESSAGE);
+					else if(name.isEmpty()) JOptionPane.showMessageDialog(null, "Le champ 'Nom Fournisseur' ne doit pas être vide!","Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
 					else {
 						Fournisseur f = new Fournisseur(name, selectedVille);
 						String etatCompte = bg.getSelection().getActionCommand();
@@ -258,7 +256,7 @@ public class CreatePanelCompte extends JPanel {
 						JOptionPane.showMessageDialog(null,"Compte enregistré avec succès", "Enregistrement du compte",JOptionPane.INFORMATION_MESSAGE);
 						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
 						actif.setSelected(true);
-						Files.compteMap.put( f.noCompte, f);
+						Files.createFournisseur(f.noCompte, f);
 						enregistrer.setEnabled(false);
 				
 					}

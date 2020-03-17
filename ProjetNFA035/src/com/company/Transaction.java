@@ -1,25 +1,32 @@
 package com.company;
 import java.util.*;
+
+import com.company.Compte.EtatCompte;
+
 import java.io.*;
 import java.time.*;
 public abstract class Transaction implements Serializable, Comparable<Transaction> {
-	static int noSerie =0;
+	static int noSerie = TransactionFiles.getTransactionsSize();
 	int noTransaction =0;
 	String description;
-	LocalDate dateTransaction ;
+	String dateTransaction ;
 	protected double montant = 0.0d;
+	TypePaie typePaie = TypePaie.CASH;
 	enum TypePaie {
 		CASH,
 		CHEQUE,
 		TRANSFERT
 	};
 	//TODO: set mode paie
-	Transaction(LocalDate d, double m) {
+	Transaction(String d, double m) {
 		noSerie ++;
 		dateTransaction = d;	
 		montant = m;
 		noTransaction = noSerie;
 	}
+	protected void setTypePaie(TypePaie e) {
+		typePaie = e;}
+	
 	
 	public int compareTo(Transaction t) {
 	 	int comp = 0;
