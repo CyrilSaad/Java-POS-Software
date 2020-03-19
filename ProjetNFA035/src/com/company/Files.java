@@ -6,23 +6,25 @@ import java.io.*;
 import java.util.*;
 
 public class Files implements Serializable{
-	 static HashMap compteMap = new HashMap();
-	 static HashMap compteFMap = new HashMap();
+	 static HashMap <Integer, Client>compteMap = new HashMap<Integer, Client>();
+	 static HashMap<Integer, Fournisseur> compteFMap = new HashMap<Integer, Fournisseur>();
 	private static HashMap categorieMap = new HashMap();
 	private static HashMap articleMap = new HashMap();
 	 private static HashMap transactionMap = new HashMap();
-	  public static HashMap getComptes() {
+	
+	 
+	 public static HashMap<Integer, Client> getComptes() {
 		// TODO Auto-generated method stub
 		try {
 			   FileInputStream in = new FileInputStream("C:\\projetNFA035\\clients.txt");
 			   ObjectInputStream ois = new ObjectInputStream(in);
-			   compteMap =( (HashMap) ois.readObject()); 
+			   compteMap =( (HashMap<Integer, Client>) ois.readObject()); 
 			   ois.close();
 		} catch(Exception e) {System.out.println("Problem serializing1 " + e);}
 		return compteMap;
 	}
 	  
-	  public static HashMap getComptesF() {
+	  public static HashMap<Integer, Fournisseur> getComptesF() {
 			try {
 				   FileInputStream in = new FileInputStream("C:\\projetNFA035\\fournisseurs.txt");
 				   ObjectInputStream ois = new ObjectInputStream(in);
@@ -61,8 +63,17 @@ public class Files implements Serializable{
 	static void createClient(int noClient, Client c) {
 
 
-		 HashMap tempClient = new HashMap();
+		 HashMap <Integer, Client>tempClient = new HashMap<Integer, Client>();
 		 tempClient.put(noClient, c);		
+		 try {
+			 	FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\clients.txt");
+				ObjectOutputStream oos = new ObjectOutputStream(out);
+				compteMap.putAll(tempClient);
+				oos.writeObject(compteMap);
+				oos.flush();
+				oos.close();
+		
+		}catch(Exception e) { System.out.println("Problem serializing " + e);}
 		getComptes();
 		try {
 		 	FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\clients.txt");

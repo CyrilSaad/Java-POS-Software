@@ -45,14 +45,7 @@ public class CreatePanelCategorie extends JPanel{
 		tabmod.addColumn("Cout Achat");
 		tabmod.addColumn("Profit");
 
-		JTable table = new JTable(tabmod);
-		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
-		table.setFillsViewportHeight(true);
-		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-		table.setShowGrid(true);
-		table.setGridColor(Color.DARK_GRAY);
-		table.setRowHeight(25);
-		table.getTableHeader().setReorderingAllowed(false);
+		JTable table = Pattern.createTable(tabmod);
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();

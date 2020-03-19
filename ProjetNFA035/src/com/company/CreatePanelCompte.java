@@ -63,13 +63,7 @@ public class CreatePanelCompte extends JPanel {
 			tabmod.addColumn("Type Trs");
 			tabmod.addColumn("Date Trs");
 			tabmod.addColumn("Montant Trs");
-			JTable table = new JTable(tabmod);
-			table.setPreferredScrollableViewportSize(new Dimension(500, 300));
-			table.setFillsViewportHeight(true);
-			table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-			table.setShowGrid(true);
-			table.setGridColor(Color.DARK_GRAY);
-			table.setRowHeight(25);
+			JTable table = Pattern.createTable(tabmod);
 			for(int i=0; i<20; i++) tabmod.addRow(new Object[] {null,null,null,null});
 			JScrollPane scrollPane = new JScrollPane(table);
 

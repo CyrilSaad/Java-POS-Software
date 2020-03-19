@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class TransactionFiles  implements Serializable{
 static HashMap achatsMap = new HashMap();
-static HashMap ventesMap = new HashMap();
+static HashMap <Integer,Vente>ventesMap = new HashMap<Integer, Vente>();
 static HashMap recusMap = new HashMap();
 static HashMap paiementsMap = new HashMap();
 
@@ -24,12 +24,12 @@ public static HashMap getAchats() {
 	return achatsMap;
 }
 
-public static HashMap getVentes() {
+public static HashMap<Integer,Vente> getVentes() {
 	// TODO Auto-generated method stub
 	try {
 		   FileInputStream in = new FileInputStream("C:\\projetNFA035\\ventes.txt");
 		   ObjectInputStream ois = new ObjectInputStream(in);
-		   ventesMap =( (HashMap) ois.readObject()); 
+		   ventesMap =( (HashMap<Integer,Vente>) ois.readObject()); 
 		   ois.close();
 	} catch(Exception e) {System.out.println("Problem serializing1 " + e);}
 	return ventesMap;
@@ -79,14 +79,13 @@ static void createAchat(int noA, Achat a) {
 	getAchats();
 	  achatsMap.put(noA, a);
 	try {
-	 	FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\Achats.txt");
+	 	FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\achats.txt");
 		ObjectOutputStream oos = new ObjectOutputStream(out);
 		oos.writeObject(achatsMap);
 		oos.flush();
 		oos.close();
 
 }catch(Exception e) { System.out.println("Problem serializing 2" + e);}
-System.out.println(achatsMap);
 	}
 
 static void createPaiement(int noA, Paiement a) {

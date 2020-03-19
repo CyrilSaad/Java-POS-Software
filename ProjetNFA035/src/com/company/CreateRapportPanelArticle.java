@@ -101,13 +101,7 @@ public class CreateRapportPanelArticle extends JPanel {
  		DefaultTableModel tabmod = new DefaultTableModel();
  		for (int i = 0; i < columns.length; i++)
  			tabmod.addColumn(columns[i]);
- 		JTable table = new JTable(tabmod);
- 		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
- 		table.setFillsViewportHeight(true);
- 		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
- 		table.setShowGrid(true);
- 		table.setShowVerticalLines(true);
- 		table.setGridColor(Color.blue);
+ 		JTable table = Pattern.createTable(tabmod);
  		JScrollPane scrollPane = new JScrollPane(table);
 
  		// end

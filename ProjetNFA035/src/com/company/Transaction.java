@@ -12,7 +12,7 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	String dateTransaction ;
 	protected double montant = 0.0d;
 	TypePaie typePaie = TypePaie.CASH;
-	enum TypePaie {
+	enum TypePaie implements Serializable {
 		CASH,
 		CHEQUE,
 		TRANSFERT

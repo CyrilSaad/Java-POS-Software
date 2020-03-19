@@ -9,7 +9,7 @@ public class Paiement extends TransactionFournisseur {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Paiement(LocalDate d, double m, Fournisseur f) {
+	Paiement(String d, double m, Fournisseur f) {
 		super(d, m, f);
 		// TODO Auto-generated constructor stub
 	}
