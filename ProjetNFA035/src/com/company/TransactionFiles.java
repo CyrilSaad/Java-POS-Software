@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TransactionFiles  implements Serializable{
@@ -57,8 +58,7 @@ public static HashMap getPaiements() {
 	return paiementsMap;
 }
 
-public static int getTransactionsSize
-() {
+public static int getTransactionsSize() {
 	int map1 = getPaiements().size();
 	int map2 = getRecus().size();
 	int map3 = getAchats().size();
@@ -157,5 +157,13 @@ static void createVente(int noA, Vente a) {
 System.out.println(ventesMap);
 
 
+}
+
+public static int getTransactionSize() {
+	ArrayList map1 = new ArrayList(getVentes().values());
+	ArrayList map2 =new ArrayList(getAchats().values()) ;
+	map1.addAll(map2);
+	return map1.size();
+	
 }
 }

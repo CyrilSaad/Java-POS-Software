@@ -9,7 +9,7 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	static int noSerie = TransactionFiles.getTransactionsSize();
 	int noTransaction =0;
 	String description;
-	String dateTransaction ;
+	Date dateTransaction ;
 	protected double montant = 0.0d;
 	TypePaie typePaie = TypePaie.CASH;
 	enum TypePaie implements Serializable {
@@ -18,7 +18,7 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 		TRANSFERT
 	};
 	//TODO: set mode paie
-	Transaction(String d, double m) {
+	Transaction(Date d, double m) {
 		noSerie ++;
 		dateTransaction = d;	
 		montant = m;
@@ -29,19 +29,21 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	
 	
 	public int compareTo(Transaction t) {
-	 	int comp = 0;
-	 if(description.compareTo(t.description) == 1)  comp = 1;
-	 else if (dateTransaction.compareTo(t.dateTransaction) == 1)  comp = 1;
-	 else if(noTransaction > t.noTransaction)  comp =1;	 
-	return comp;
+		int i = description.compareTo(t.description);
+	    if (i != 0) return i;
+
+	    i = dateTransaction.compareTo(t.dateTransaction);
+	    if (i != 0) return i;
+
+	    return noTransaction - t.noTransaction;
 	
  }
 	 
 	
 	public String toString() {
 		return 
-				"Date de la transaction: \t" + dateTransaction + 
-				"\n Numéro de la transaction:" + noTransaction +
-				"\n Montant total:\t" + montant;
+				"Date de la transaction:" + dateTransaction + 
+				"	Numéro de la transaction:" + noTransaction +
+				"	Montant total:" + montant;
 	}
 }

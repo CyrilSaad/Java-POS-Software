@@ -34,6 +34,8 @@ public class CreatePanelArticle extends JPanel {
 	JFrame frame;
 	JTextField textFields[];
 	JButton creer, enregistrer, quitter;
+	JComboBox combobox;
+	JList categoriesList;
 	CreatePanelArticle(String ss, JFrame frame) {
 
 		this.frame = frame;
@@ -43,8 +45,9 @@ public class CreatePanelArticle extends JPanel {
 		parentPanel = new JPanel();
 		parentPanel.setLayout(new BorderLayout());
 
-		JComboBox combobox = new JComboBox(); combobox.setEditable(false);
+		combobox = new JComboBox(); combobox.setEditable(false); 
 		combobox.setPreferredSize(new Dimension(200, 25));
+		combobox.addActionListener(new itemSelected());
 		creer = new JButton("Créer"); creer.addActionListener(new initPanelArticle(textFields));
 		enregistrer = new JButton("Enregistrer"); enregistrer.setEnabled(false); enregistrer.addActionListener(new initPanelArticle(textFields));
 		enregistrer.setEnabled(false);
@@ -61,13 +64,7 @@ public class CreatePanelArticle extends JPanel {
 		tabmod.addColumn("Prix/Cout");
 		tabmod.addColumn("Total");
 		for(int i=0; i<20; i++) tabmod.addRow(new Object[] {null,null,null,null});
-		JTable table = new JTable(tabmod);
-		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
-		table.setFillsViewportHeight(true);
-		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-		table.setShowGrid(true);
-		table.setGridColor(Color.DARK_GRAY);
-		table.setRowHeight(25);
+		JTable table = Pattern.createTable(tabmod);
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();
@@ -152,13 +149,13 @@ public class CreatePanelArticle extends JPanel {
 		gbc.gridx = 1; gbc.gridy = 6;
 		childDisplayPanel.add(textFields[5], gbc);
 
-		DefaultListModel listModel = new DefaultListModel();
+
 		// forLoop arrayList into ListModel .setModel()
-		JList achatsList = new JList(listModel);
-		JScrollPane listScroller = new JScrollPane(achatsList);
+		 categoriesList = new JList();
+		JScrollPane listScroller = new JScrollPane(categoriesList);
 		// listScroller.add
 		listScroller.setPreferredSize(new Dimension(500, 500));
-		achatsList.setBorder(BorderFactory.createTitledBorder(new LineBorder(Color.BLACK, 1), ss + "s",
+		categoriesList.setBorder(BorderFactory.createTitledBorder(new LineBorder(Color.BLACK, 1), ss + "s",
 				TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
 		
 		pp.add(childDisplayPanel);
@@ -193,11 +190,17 @@ public class CreatePanelArticle extends JPanel {
 	
 			Object eventSource = e.getSource();
 				if(eventSource == creer) {
+					if(combobox.getSelectedItem() == null) JOptionPane.showMessageDialog(null, "Pas de catégorie choisi", "Champ Manquant", JOptionPane.WARNING_MESSAGE);
+					else {
+						combobox.setSelectedIndex(0);
 					creer.setEnabled(false);
 					textFields[0].setText(""+ (Article.noSerie+1));
 					textFields[1].setEditable(true); 
 					textFields[5].setEditable(true); 
 					enregistrer.setEnabled(true);
+					Pattern.createCategorieBox(combobox);
+					}
+				
 
 				   } //Creer button 
 				
@@ -211,6 +214,7 @@ public class CreatePanelArticle extends JPanel {
 					String profitText = textFields[5].getText();
 					boolean profitErr = Pattern.isDouble(profitText);
 					double profit = -1;
+					Categorie cat = Filter.getCategorie(combobox.getSelectedItem().toString());
 					if(profitErr) {
 						 profit = Double.parseDouble(profitText);
 						} else JOptionPane.showMessageDialog(null, "Le taux de profit est incorrect!", "Erreur", JOptionPane.ERROR_MESSAGE);
@@ -222,7 +226,7 @@ public class CreatePanelArticle extends JPanel {
 					else if((!profitErr && !profitText.isEmpty() ) || !(profit>=0 && profit <=1)) JOptionPane.showMessageDialog(null, "Le taux de profit est incorrect!","Erreur", JOptionPane.ERROR_MESSAGE);
 				
 					else  {
-						Article a = new Article(name, profit);
+						Article a = new Article(name, profit, cat);
 					enregistrer.setEnabled(true);
 						JOptionPane.showMessageDialog(null,"Article enregistré avec succès", "Enregistrement de l'article",JOptionPane.INFORMATION_MESSAGE);
 						for(int i=0; i<textFields.length; i++) textFields[i].setText("");
@@ -233,4 +237,12 @@ public class CreatePanelArticle extends JPanel {
 				}
 			}
 	}
-}
+	private class itemSelected implements ActionListener {
+	@Override
+		public void actionPerformed(ActionEvent arg0) {
+				Filter.setListCategories(categoriesList, combobox);
+			}
+		}
+
+	}
+

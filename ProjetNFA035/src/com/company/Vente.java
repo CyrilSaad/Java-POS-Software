@@ -1,6 +1,7 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Vente extends TransactionClient {
 
@@ -11,7 +12,7 @@ public class Vente extends TransactionClient {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Vente(String d, double m,Client c) 
+	Vente(Date d, double m,Client c) 
 		{super(d, m, c);}
 
 	@Override
@@ -19,7 +20,7 @@ public class Vente extends TransactionClient {
 		client.debiter(d);
 		
 	}
-
+	
 	
 	
 	

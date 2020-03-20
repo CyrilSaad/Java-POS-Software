@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -79,15 +81,6 @@ public class CreatePanelRP extends JPanel {
 		bg.add(transfert);
 
 		this.setLayout(new BorderLayout());
-
-		DefaultTableModel tabmod = new DefaultTableModel();
-
-		tabmod.addColumn("No Trs");
-		tabmod.addColumn("Type Trs");
-		tabmod.addColumn("Date Trs");
-		tabmod.addColumn("Montant Trs");
-		JTable table = Pattern.createTable(tabmod);
-		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new BorderLayout());
@@ -179,7 +172,7 @@ public class CreatePanelRP extends JPanel {
 
 		
 		// forLoop arrayList into ListModel .setModel()
-		JList RPList = new JList(); 
+		 RPList = new JList(); 
 		JScrollPane listScroller = new JScrollPane(RPList);
 		// listScroller.add
 		listScroller.setPreferredSize(new Dimension(500, 500));
@@ -201,20 +194,17 @@ public class CreatePanelRP extends JPanel {
 		this.add(displayPanel, BorderLayout.CENTER);
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
+		if (currentPane == "Reçu")
+			Pattern.createClientBox(comboBox);
+		else
+			Pattern.createFournisseurBox(comboBox);
 
 	};
 
 	private class panelInitRP implements ActionListener {
 
-		JTextField tf[];
-
 		panelInitRP(JTextField[] tf) {
 			super();
-			this.tf = tf;
-		}
-
-		void panelInitRP() {
-
 		}
 
 		@Override
@@ -227,13 +217,18 @@ public class CreatePanelRP extends JPanel {
 
 			if (currentPane == "Reçu") {
 				if (eventSource == creer) {
-					creer.setEnabled(false);
+					if(comboBox.getSelectedItem() == null) JOptionPane.showMessageDialog(null, "Pas de client choisi", "Champ Manquant", JOptionPane.WARNING_MESSAGE);
+					else {
+						creer.setEnabled(false);
 					textFields[0].setText("" + (Transaction.noSerie + 1));
+					textFields[1].setText(currentPane);
 					textFields[2].setEditable(true);
 					textFields[3].setEditable(true);
-					textFields[3].setToolTipText("e.g: '10.0', '105.3'...");
+					textFields[3].setToolTipText("e.g: '10.0', '105'...");
 					enregistrer.setEnabled(true);
 					Pattern.createClientBox(comboBox);
+					}
+					
 				} // Creer button
 
 				if (eventSource == enregistrer) {
@@ -241,30 +236,37 @@ public class CreatePanelRP extends JPanel {
 					boolean validDate = Pattern.isDate(dateString);
 
 					String montantText = textFields[3].getText();
-					boolean montantErr = Pattern.isDouble(montantText);
+					boolean validMontant = Pattern.isDouble(montantText);
 					double montant = 0;
+					Date date = null;
 
-					if (montantErr) {
+					if (validMontant) {
 						montant = Double.parseDouble(montantText);
-					} else
+					} 
+					else
 						JOptionPane.showMessageDialog(null, "Le montant est incorrect!", "Erreur",
 								JOptionPane.ERROR_MESSAGE);
-
-					if (dateString.isEmpty())
+					if(validDate && !dateString.isEmpty()) {
+						try {
+							 date = Pattern.format.parse(dateString);
+						} catch (ParseException e1) {
+							JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",
+									JOptionPane.WARNING_MESSAGE);					
+						}
+					}
+					else if (dateString.isEmpty())
 						JOptionPane.showMessageDialog(null, "Veuillez préciser la date d'issue du reçu",
 								"Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
 					else if (montantText.isEmpty())
-						JOptionPane.showMessageDialog(null, "Veuillez préciser un taux de montant", "Champ Obligatoire",
-								JOptionPane.WARNING_MESSAGE);
-					else if (!validDate)
-						JOptionPane.showMessageDialog(null, "Le format de la date donnée est incorrect!", "Erreur",
+						JOptionPane.showMessageDialog(null, "Veuillez préciser un taux de montant",
+								"Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
+					else if (!validDate) JOptionPane.showMessageDialog(null, "Le format de la date donnée est incorrect!", "Erreur",
 								JOptionPane.ERROR_MESSAGE);
-
-					else {
+				
+					if(validMontant && date != null) {
 						Client c =  Filter.getClient(comboBox.getSelectedItem().toString());
-						Recu r = new Recu(dateString, montant, c);
 						enregistrer.setEnabled(true);
-
+						Recu r = new Recu(date, montant, c);
 						String etatCompte = bg.getSelection().getActionCommand();
 						switch (etatCompte) {
 						case "CASH":
@@ -292,40 +294,53 @@ public class CreatePanelRP extends JPanel {
 			if (currentPane == "Paiement") {
 
 				if (eventSource == creer) {
+					if(comboBox.getSelectedItem() == null) JOptionPane.showMessageDialog(null, "Pas de fournisseur choisi", "Champ Manquant", JOptionPane.WARNING_MESSAGE);
+					else {
+						comboBox.setSelectedIndex(0);
 					creer.setEnabled(false);
 					textFields[0].setText("" + (Transaction.noSerie + 1));
+					textFields[1].setText(currentPane);
 					textFields[2].setEditable(true);
 					textFields[3].setEditable(true);
 					enregistrer.setEnabled(true);
 					Pattern.createFournisseurBox(comboBox);
+					}
+					
 				}
 					if (eventSource == enregistrer) {
 						String dateString = textFields[2].getText();
 						boolean validDate = Pattern.isDate(dateString);
-
+						Date date = null;
 						String montantText = textFields[3].getText();
-						boolean montantErr = Pattern.isDouble(montantText);
+						boolean validMontant = Pattern.isDouble(montantText);
 						double montant = 0;
 
-						if (montantErr) {
+						if (validMontant) {
 							montant = Double.parseDouble(montantText);
-						} else
+						} 
+						else
 							JOptionPane.showMessageDialog(null, "Le montant est incorrect!", "Erreur",
 									JOptionPane.ERROR_MESSAGE);
-
-						if (dateString.isEmpty())
+						if(validDate && !dateString.isEmpty()) {
+							try {
+								 date = Pattern.format.parse(dateString);
+							} catch (ParseException e1) {
+								JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",
+										JOptionPane.WARNING_MESSAGE);					
+							}
+						}
+						else if (dateString.isEmpty())
 							JOptionPane.showMessageDialog(null, "Veuillez préciser la date d'issue du paiement",
 									"Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
 						else if (montantText.isEmpty())
 							JOptionPane.showMessageDialog(null, "Veuillez préciser un taux de montant",
 									"Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
-						else if (!validDate)
-							JOptionPane.showMessageDialog(null, "Le format de la date donnée est incorrect!", "Erreur",
+						else if (!validDate) JOptionPane.showMessageDialog(null, "Le format de la date donnée est incorrect!", "Erreur",
 									JOptionPane.ERROR_MESSAGE);
-
-						else {
+					
+						if(validMontant && date != null) {
 							Fournisseur f =  Filter.getFournisseur(comboBox.getSelectedItem().toString());
-							Paiement p = new Paiement(dateString, montant, f);
+							Paiement p = new Paiement(date, montant, f);
 							enregistrer.setEnabled(true);
 
 							String etatCompte = bg.getSelection().getActionCommand();
@@ -341,7 +356,7 @@ public class CreatePanelRP extends JPanel {
 								break;
 							}
 
-							JOptionPane.showMessageDialog(null, "Reçu enregistré avec succès",
+							JOptionPane.showMessageDialog(null, "Paiement enregistré avec succès",
 									"Enregistrement de la reçu", JOptionPane.INFORMATION_MESSAGE);
 							for (int i = 0; i < textFields.length; i++)
 								textFields[i].setText("");
@@ -360,11 +375,11 @@ public class CreatePanelRP extends JPanel {
 		@Override
 
 		public void actionPerformed(ActionEvent arg0) {
-			if (currentPane == "Vente") {
+			if (currentPane == "Reçu") {
 				Filter.setListClientRecus(RPList, comboBox);
 			}
 			
-			if (currentPane == "Achat") {
+			if (currentPane == "Paiement") {
 				Filter.setListFournisseurPaiements(RPList, comboBox);
 			}
 

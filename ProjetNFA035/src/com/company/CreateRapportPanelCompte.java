@@ -10,6 +10,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -24,7 +25,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
 public class CreateRapportPanelCompte extends JPanel {
-	CreateRapportPanelCompte(String s, String ss, String label1, String label2) {
+	CreateRapportPanelCompte(String s, String ss, String label1, String label2, JFrame f) {
 
 		this.setLayout(new BorderLayout());
 		this.setBorder(new EmptyBorder(10, 10, 10, 10));

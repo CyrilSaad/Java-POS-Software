@@ -1,11 +1,12 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 abstract class TransactionClient extends Transaction {
 	
 	Client client;
-	TransactionClient(String d, double m,Client c) {
+	TransactionClient(Date d, double m,Client c) {
 		super(d, m);
 		client = c;
 			
@@ -13,7 +14,7 @@ abstract class TransactionClient extends Transaction {
 	abstract void MiseAJourCompte(double montant);
 	
 	public String toString() {
-		return "" + super.toString() + "\n Client:" +  client;
+		return "" + super.toString() + "	Client:" +  client;
 	}
 }
 

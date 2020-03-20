@@ -1,6 +1,7 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 public class Paiement extends TransactionFournisseur {
 
@@ -9,7 +10,7 @@ public class Paiement extends TransactionFournisseur {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Paiement(String d, double m, Fournisseur f) {
+	Paiement(Date d, double m, Fournisseur f) {
 		super(d, m, f);
 		// TODO Auto-generated constructor stub
 	}

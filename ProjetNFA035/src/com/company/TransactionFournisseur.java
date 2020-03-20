@@ -1,10 +1,11 @@
 package com.company;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 abstract class TransactionFournisseur extends Transaction {
 	Fournisseur fournisseur;
-	TransactionFournisseur(String d, double m,Fournisseur f) {
+	TransactionFournisseur(Date d, double m,Fournisseur f) {
 		super(d,m);
 		fournisseur = f;
 	}

@@ -2,7 +2,6 @@ package com.company;
 
 import java.util.*;
 import javax.swing.*;
-import javax.swing.DefaultListModel;
 
 public class Filter {
 	public static Client getClient(String s) {
@@ -51,7 +50,7 @@ public class Filter {
 
 	public static ArrayList findClientRecus(Client c) {
 		
-		Object arr[] =   TransactionFiles.getVentes().values().toArray();
+		Object arr[] =   TransactionFiles.getRecus().values().toArray();
 		Recu data[] = new Recu[arr.length];
 		ArrayList ventesClient = new ArrayList<Vente>();
 		for(int i=0; i<data.length; i++) {
@@ -80,6 +79,22 @@ public class Filter {
 		return  achatsFournisseur;
 	}
 
+public static ArrayList findFournisseurPaiements(Fournisseur f) {
+		
+		Object arr[] =   TransactionFiles.getPaiements().values().toArray();
+		Paiement data[] = new Paiement[arr.length];
+		ArrayList paiementsFournisseur = new ArrayList<Paiement>();
+		for(int i=0; i<data.length; i++) {
+			data[i] = (Paiement) arr[i];
+				if(f.noCompte == data[i].fournisseur.noCompte) {
+					paiementsFournisseur.add(data[i]);
+			}
+			
+			
+		}//end loop
+		System.out.println("haha");
+		return  paiementsFournisseur;
+	}
 	public static void setListClientVentes(JList list, JComboBox cb){
 
 		String item = cb.getSelectedItem().toString();
@@ -103,6 +118,84 @@ public class Filter {
 			listModel.addElement(a);
 		}
 		list.setModel(listModel);
+	
+	}
+	public static void setListClientRecus(JList list, JComboBox cb){
+
+		String item = cb.getSelectedItem().toString();
+		Client clientChoisi = Filter.getClient(item);
+		ArrayList<Recu> recus = Filter.findClientRecus(clientChoisi);
+		DefaultListModel<Recu> listModel = new DefaultListModel<Recu>();
+		for (Recu r: recus) {
+			listModel.addElement(r);
+		}
+		list.setModel(listModel);
+	
+	}
+	
+	public static void setListFournisseurPaiements(JList list, JComboBox cb){
+
+		String item = cb.getSelectedItem().toString();
+		Fournisseur fournisseurChoisi = Filter.getFournisseur(item);
+		ArrayList<Paiement> paiements = Filter.findFournisseurPaiements(fournisseurChoisi);
+		DefaultListModel<Paiement> listModel = new DefaultListModel<Paiement>();
+		for (Paiement p: paiements) {
+			listModel.addElement(p);
+		}
+		list.setModel(listModel);
+	
+	}
+
+	public static void setListCategories(JList categoriesList, JComboBox combobox) {
+		// TODO Auto-generated method stub
+
+
+		String item = combobox.getSelectedItem().toString();
+		Categorie categorieChoisi = Filter.getCategorie(item);
+		ArrayList<Article> articles = Filter.getCategorieArticles(categorieChoisi);
+		DefaultListModel<Article> listModel = new DefaultListModel<Article>();
+		for (Article a: articles) {
+			listModel.addElement(a);
+		}
+		categoriesList.setModel(listModel);
+	
+	
+	}
+
+	private static ArrayList getCategorieArticles(Categorie item) {
+		// TODO Auto-generated method stub
+
+		
+		Object arr[] =   Files.getArticle().values().toArray();
+		Article data[] = new Article[arr.length];
+		ArrayList<Article> articles = new ArrayList<Article>();
+		for(int i=0; i<data.length; i++) {
+			data[i] = (Article) arr[i];
+				if(item.noCategorie == data[i].categorie.noCategorie) {
+				articles.add(data[i]);
+			}
+			
+			
+		}//end loop
+		System.out.println("haha");
+		return  articles;
+	}
+
+	public static Categorie getCategorie(String s) {
+		// TODO Auto-generated method stub
+
+		int noCategorie = Integer.parseInt(s.substring(s.indexOf("(")+1, s.indexOf(")")));
+		Object[] arr= Files.getCategories().values().toArray();
+		Categorie c = null;
+		Categorie[] categorieData = (Categorie[]) new Categorie[arr.length];
+		
+		for(int i=0; i<categorieData.length; i++) {
+			categorieData[i] = (Categorie) arr[i];
+			if(noCategorie == categorieData[i].noCategorie ) {
+				c = (Categorie) categorieData[i];
+			}
+		}//endloop
+		return c ;
 	
 	}
 }

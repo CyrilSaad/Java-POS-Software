@@ -21,22 +21,22 @@ import java.util.HashMap;
 public class Main {
 	String versionNumber = "0.0.1";
 	JFrame frame = new JFrame("Gestion de transactions commerciales");   
-	JPanel ventePanel = new CreatePanelVA("Vente", "Prix", "Client",frame);
-	JPanel achatPanel = new CreatePanelVA("Achat", "Cout", "Fournisseur", frame);
-	JPanel recuPanel = new CreatePanelRP("Reçu", "Client", frame);
-	JPanel paiementPanel = new CreatePanelRP("Paiement", "Fournisseur", frame);
-	JPanel clientPanel = new CreatePanelCompte("Client", frame);
-	JPanel fournisseurPanel = new CreatePanelCompte("Fournisseur", frame);
-	JPanel articlePanel = new CreatePanelArticle("Article", frame);
-	JPanel categoriePanel = new CreatePanelCategorie("Catégorie", frame);
+	JPanel ventePanel;
+	JPanel achatPanel;
+	JPanel recuPanel ;
+	JPanel paiementPanel ;
+	JPanel clientPanel ;
+	JPanel fournisseurPanel ;
+	JPanel articlePanel;
+	JPanel categoriePanel ;
 
-	JPanel rapportVentePanel = new CreateRapportPanelVA("Vente", "Client");
-	JPanel rapportAchatPanel = new CreateRapportPanelVA("Achat", "Fournisseur");
-	JPanel rapportClientPanel = new CreateRapportPanelCompte("Client", "Client", "Vente", "Reçu");
-	JPanel rapportFournisseurPanel = new CreateRapportPanelCompte("Fournisseur", "Fournisseur", "Achat", "Paie");
-	JPanel rapportRecuPanel = new CreateRapportPanelRP("Reçu", "Client");
-	JPanel rapportPaiementPanel = new CreateRapportPanelRP("Paiement", "Fournisseur");
-	JPanel rapportArticlePanel = new CreateRapportPanelArticle();
+	JPanel rapportVentePanel;
+	JPanel rapportAchatPanel;
+	JPanel rapportClientPanel ;
+	JPanel rapportFournisseurPanel ;
+	JPanel rapportRecuPanel ;
+	JPanel rapportPaiementPanel ;
+	JPanel rapportArticlePanel;
 	JMenuBar mb;
 	JMenu transactionMenu, compteMenu, stockMenu, toolMenu, quitterMenu;
 	JMenu venteMenu, achatMenu, recuMenu, paiementMenu, clientMenu, fournisseurMenu;
@@ -149,79 +149,79 @@ public class Main {
 		public void actionPerformed(ActionEvent e) {
 			Object event = e.getSource();
 			if (event == create[0]) {
-				frame.setContentPane(ventePanel);
+				frame.setContentPane(ventePanel  = new CreatePanelVA("Vente", "Prix", "Client",frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = ventePanel;
 			} else if (event == rapport[0]) {
-				frame.setContentPane(rapportVentePanel);
+				frame.setContentPane(rapportVentePanel  = new CreateRapportPanelVA("Vente", "Client", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = rapportVentePanel;
 			} else if (event == create[1]) {
-				frame.setContentPane(achatPanel);
+				frame.setContentPane(achatPanel  = new CreatePanelVA("Achat", "Cout", "Fournisseur", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = achatPanel;
 			} else if (event == rapport[1]) {
-				frame.setContentPane(rapportAchatPanel);
+				frame.setContentPane(rapportAchatPanel  = new CreateRapportPanelVA("Achat", "Fournisseur", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = rapportAchatPanel;
 			} else if (event == create[2]) {
-				frame.setContentPane(paiementPanel);
+				frame.setContentPane(paiementPanel = new CreatePanelRP("Paiement", "Fournisseur", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = paiementPanel;
 			} else if (event == rapport[2]) {
-				frame.setContentPane(rapportPaiementPanel);
+				frame.setContentPane(rapportPaiementPanel = new CreateRapportPanelRP("Paiement", "Fournisseur", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = rapportPaiementPanel;
 			} else if (event == create[3]) {
-				frame.setContentPane(recuPanel);
+				frame.setContentPane(recuPanel = new CreatePanelRP("Reçu", "Client", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = recuPanel;
 			} else if (event == rapport[3]) {
-				frame.setContentPane(rapportRecuPanel);
+				frame.setContentPane(rapportRecuPanel= new CreateRapportPanelRP("Reçu", "Client", frame));
 				frame.validate();
 				frame.repaint();
-				currentPane = rapportRecuPanel;
+				currentPane = rapportRecuPanel ;
 			} else if (event == create[4]) {
-				frame.setContentPane(clientPanel);
+				frame.setContentPane(clientPanel = new CreatePanelCompte("Client", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = clientPanel;
 			} else if (event == rapport[4]) {
-				frame.setContentPane(rapportClientPanel);
+				frame.setContentPane(rapportClientPanel = new CreateRapportPanelCompte("Client", "Client", "Vente", "Reçu", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = rapportClientPanel;
 			} else if (event == create[5]) {
-				frame.setContentPane(fournisseurPanel);
+				frame.setContentPane(fournisseurPanel = new CreatePanelCompte("Fournisseur", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = fournisseurPanel;
 			} else if (event == rapport[5]) {
-				frame.setContentPane(rapportFournisseurPanel);
+				frame.setContentPane(rapportFournisseurPanel = new CreateRapportPanelCompte("Fournisseur", "Fournisseur", "Achat", "Paie", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = rapportFournisseurPanel;
 			} else if (event == create[6]) {
-				frame.setContentPane(articlePanel);
+				frame.setContentPane(articlePanel  = new CreatePanelArticle("Article", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = articlePanel;
 			}  else if (event == rapport[6]) {
-				frame.setContentPane(rapportArticlePanel);
+				frame.setContentPane(rapportArticlePanel  = new CreateRapportPanelArticle());
 				frame.validate();
 				frame.repaint();
 				currentPane = rapportArticlePanel;
 
 			} 
 			else if (event == create[7]) {
-				frame.setContentPane(categoriePanel);
+				frame.setContentPane(categoriePanel = new CreatePanelCategorie("Catégorie", frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = categoriePanel;
