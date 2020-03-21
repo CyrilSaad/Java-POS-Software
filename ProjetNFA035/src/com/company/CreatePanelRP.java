@@ -227,6 +227,7 @@ public class CreatePanelRP extends JPanel {
 					textFields[3].setToolTipText("e.g: '10.0', '105'...");
 					enregistrer.setEnabled(true);
 					Pattern.createClientBox(comboBox);
+					Filter.setListClientRecus(RPList, comboBox);
 					}
 					
 				} // Creer button
@@ -267,6 +268,7 @@ public class CreatePanelRP extends JPanel {
 						Client c =  Filter.getClient(comboBox.getSelectedItem().toString());
 						enregistrer.setEnabled(true);
 						Recu r = new Recu(date, montant, c);
+						r.description = textFields[1].getText();
 						String etatCompte = bg.getSelection().getActionCommand();
 						switch (etatCompte) {
 						case "CASH":
@@ -287,6 +289,7 @@ public class CreatePanelRP extends JPanel {
 						TransactionFiles.createRecu(r.noTransaction, r);
 						enregistrer.setEnabled(false);
 						creer.setEnabled(true);
+						Filter.setListClientRecus(RPList, comboBox);
 					}
 				}
 			}
@@ -304,6 +307,7 @@ public class CreatePanelRP extends JPanel {
 					textFields[3].setEditable(true);
 					enregistrer.setEnabled(true);
 					Pattern.createFournisseurBox(comboBox);
+					Filter.setListFournisseurPaiements(RPList, comboBox);
 					}
 					
 				}
@@ -314,7 +318,7 @@ public class CreatePanelRP extends JPanel {
 						String montantText = textFields[3].getText();
 						boolean validMontant = Pattern.isDouble(montantText);
 						double montant = 0;
-
+						
 						if (validMontant) {
 							montant = Double.parseDouble(montantText);
 						} 
@@ -341,6 +345,7 @@ public class CreatePanelRP extends JPanel {
 						if(validMontant && date != null) {
 							Fournisseur f =  Filter.getFournisseur(comboBox.getSelectedItem().toString());
 							Paiement p = new Paiement(date, montant, f);
+							p.description = textFields[1].getText();
 							enregistrer.setEnabled(true);
 
 							String etatCompte = bg.getSelection().getActionCommand();
@@ -363,6 +368,7 @@ public class CreatePanelRP extends JPanel {
 							TransactionFiles.createPaiement(p.noTransaction, p);
 							enregistrer.setEnabled(false);
 							creer.setEnabled(true);
+							Filter.setListFournisseurPaiements(RPList, comboBox);
 						}
 					}
 

@@ -21,7 +21,7 @@ public class Article implements Serializable, Comparable {
 		noArticle = noSerie;
 	}
 	public String toString() {
-		return " " + "Nom Article: " + noArticle + "     No. Article: " +noArticle;
+		return "Nom Article: " + nomArticle + "  No. Article: " + noArticle;
 	}
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub

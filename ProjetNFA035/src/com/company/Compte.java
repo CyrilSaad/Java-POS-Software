@@ -38,6 +38,6 @@ public abstract class Compte implements Serializable, Comparable<Compte> {
 	}
 	
 	public String toString() {
-		return "Nom Compte:\t" + nomCompte + "\n Numéro Compte:\t" + noCompte +  "\n Solde:\t" + solde + "\n Adresse:\t" + ville + "\n Etat du compte:" + etat;
+		return "Nom Compte: " + nomCompte + "  Numéro Compte: " + noCompte +  "  Solde: " + solde +  "  Etat du compte: " + etat;
 	}
 }

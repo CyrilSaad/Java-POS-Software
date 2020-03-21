@@ -107,7 +107,52 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 		list.setModel(listModel);
 	
 	}
+	public static void setListClient(JList list){
 
+		Collection<Client> clients = Files.getComptes().values();
+		DefaultListModel<Client> listModel = new DefaultListModel<Client>();
+		for (Client c: clients) {
+			listModel.addElement(c);
+		}
+		list.setModel(listModel);
+	
+	}
+	
+	public static void setListCategorie(JList list){
+
+		Collection<Categorie> categories = Files.getCategories().values();
+		DefaultListModel<Categorie> listModel = new DefaultListModel<Categorie>();
+		for (Categorie c: categories) {
+			listModel.addElement(c);
+		}
+		list.setModel(listModel);
+	
+	}
+	
+	public static void setListFournisseur(JList list){
+
+		Collection<Fournisseur> fournisseurs = Files.getComptesF().values();
+		DefaultListModel<Fournisseur> listModel = new DefaultListModel<Fournisseur>();
+		for (Fournisseur f: fournisseurs) {
+			listModel.addElement(f);
+		}
+		list.setModel(listModel);
+	
+	}
+	public static ArrayList<Transaction> getClientTransactions(Client clientChoisi){
+		ArrayList<Transaction> ventes = Filter.findClientVentes(clientChoisi);
+		ArrayList<Transaction> recus = Filter.findClientRecus(clientChoisi);
+		ventes.addAll(recus);
+		return ventes;
+	}
+
+	public static ArrayList<Transaction> getFournisseurTransactions(Fournisseur fournChoisi){
+		ArrayList<Transaction> achats = Filter.findFournisseurAchats(fournChoisi);
+		ArrayList<Transaction> paiements = Filter.findFournisseurPaiements(fournChoisi);
+		achats.addAll(paiements);
+		return achats;
+	}
+	
 	public static void setListFournisseurAchats(JList list, JComboBox cb){
 
 		String item = cb.getSelectedItem().toString();
@@ -162,7 +207,7 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 	
 	}
 
-	private static ArrayList getCategorieArticles(Categorie item) {
+	public static ArrayList<Article> getCategorieArticles(Categorie item) {
 		// TODO Auto-generated method stub
 
 		
@@ -177,9 +222,27 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 			
 			
 		}//end loop
-		System.out.println("haha");
 		return  articles;
 	}
+	
+//	private static ArrayList getTransactionsArticle(Article item) {
+//		// TODO Auto-generated method stub
+//
+//		
+//		Object arr[] =  Filter.getA
+//		Article data[] = new Article[arr.length];
+//		ArrayList<Article> articles = new ArrayList<Article>();
+//		for(int i=0; i<data.length; i++) {
+//			data[i] = (Article) arr[i];
+//				if(item.noCategorie == data[i].categorie.noCategorie) {
+//				articles.add(data[i]);
+//			}
+//			
+//			
+//		}//end loop
+//		System.out.println("haha");
+//		return  articles;
+//	}
 
 	public static Categorie getCategorie(String s) {
 		// TODO Auto-generated method stub
@@ -197,6 +260,22 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 		}//endloop
 		return c ;
 	
+	}
+
+	public static Article getArticle(String s) {
+		int noArticle = Integer.parseInt(s.substring(s.indexOf("(")+1, s.indexOf(")")));
+		Object[] arr= Files.getArticle().values().toArray();
+		Article a = null;
+		Article[] categorieData = (Article[]) new Article[arr.length];
+		
+		for(int i=0; i<categorieData.length; i++) {
+			categorieData[i] = (Article) arr[i];
+			if(noArticle == categorieData[i].noArticle ) {
+				a = (Article) categorieData[i];
+			}
+		}//endloop
+		return a;
+
 	}
 }
 //huhu(6)

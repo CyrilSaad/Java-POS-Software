@@ -14,7 +14,7 @@ abstract class TransactionClient extends Transaction {
 	abstract void MiseAJourCompte(double montant);
 	
 	public String toString() {
-		return "" + super.toString() + "	Client:" +  client;
+		return "" + super.toString() + "	Client:" +  client.nomCompte + "(" + client.noCompte + ")";
 	}
 }
 

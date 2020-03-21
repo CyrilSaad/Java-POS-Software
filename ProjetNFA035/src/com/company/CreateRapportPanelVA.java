@@ -1,6 +1,7 @@
 package com.company;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -15,6 +16,8 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
 
+import javax.swing.table.TableColumn;
+
 public class CreateRapportPanelVA extends JPanel {
 	private JComboBox comboBox = new JComboBox();
 	JFrame frame;
@@ -23,7 +26,7 @@ public class CreateRapportPanelVA extends JPanel {
 	JTextField tf1, tf2 = new JTextField(10);
 	JTable table;
 	DefaultTableModel tabmod;
-
+	TableColumn boxColumn;
 	CreateRapportPanelVA(String s, String ss, JFrame f) {
 		frame = f;
 		currentPane = s;
@@ -77,10 +80,9 @@ public class CreateRapportPanelVA extends JPanel {
 		// tablePan
 		String[] columns = { "No " + s, "Date " + s, ss, "Montant " + s };
 		tabmod = new DefaultTableModel();
-		for (int i = 0; i < columns.length; i++) {
-			tabmod.addColumn(columns[i]);
-		}
+		for (int i = 0; i < columns.length; i++) tabmod.addColumn(columns[i]);	
 		table = Pattern.createTable(tabmod);
+	
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		// end
@@ -97,6 +99,12 @@ public class CreateRapportPanelVA extends JPanel {
 				frame.dispose();
 
 			if (source == okButton) {
+				for (int i = 0; i < table.getRowCount(); i++) {
+					tabmod.setValueAt(null, i, 0);
+					tabmod.setValueAt(null, i, 1);
+					tabmod.setValueAt(null, i, 2);
+					tabmod.setValueAt(null, i, 3);
+				}
 				String dateDebutString, dateFinString;
 
 				dateDebutString = tf1.getText();
@@ -131,7 +139,7 @@ public class CreateRapportPanelVA extends JPanel {
 
 					ArrayList<Vente> ventes = Filter.findClientVentes(c);
 					ArrayList<Vente> filteredVentes = new ArrayList<Vente>();
-					String str;
+		
 					Date date = new Date();
 					for (int i = 0; i < ventes.size(); i++) {
 						date = ventes.get(i).dateTransaction;

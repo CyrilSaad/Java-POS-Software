@@ -13,6 +13,8 @@ public Categorie(String name) {
 	nomCategorie = name;
 }
 
-
+public String toString() {
+	return "Nom Catégorie: " + nomCategorie + "  No. Catégorie: " + noCategorie;
+}
 
 }

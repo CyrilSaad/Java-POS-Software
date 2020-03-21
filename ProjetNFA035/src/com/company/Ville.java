@@ -31,5 +31,9 @@ public class Ville implements Serializable, Comparable<Ville> {
 		else if(nomVille.compareTo(v.nomVille) == -1) return -1;
 		else return 0;
 	}
+	
+	 public String toString() {
+		return "" + nomVille + "(" + noVille + ")";
+	}
 
 }

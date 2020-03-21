@@ -1,4 +1,4 @@
-package com.company;
+ package com.company;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -95,7 +95,7 @@ public class CreateRapportPanelRP extends JPanel {
 		 tabmod = new DefaultTableModel();
 		for (int i = 0; i < columns.length; i++)
 			tabmod.addColumn(columns[i]);
-		JTable table = Pattern.createTable(tabmod);
+		 table = Pattern.createTable(tabmod);
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		// end
@@ -115,6 +115,14 @@ public class CreateRapportPanelRP extends JPanel {
 				frame.dispose();
 
 			if (source == okButton) {
+				for (int i = 0; i < table.getRowCount(); i++) {
+					tabmod.setValueAt(null, i, 0);
+					tabmod.setValueAt(null, i, 1);
+					tabmod.setValueAt(null, i, 2);
+					tabmod.setValueAt(null, i, 3);
+					tabmod.setValueAt(null, i, 4);
+				}
+
 				String dateDebutString, dateFinString;
 				String typePaie = bg.getSelection().getActionCommand();
 				dateDebutString = tf1.getText();
@@ -147,7 +155,6 @@ public class CreateRapportPanelRP extends JPanel {
 
 					ArrayList<Recu> recus = Filter.findClientRecus(c);
 					ArrayList<Recu> filteredRecus = new ArrayList<Recu>();
-					String str;
 					Date date = new Date();
 					for (int i = 0; i < recus.size(); i++) {
 						date = recus.get(i).dateTransaction;
@@ -155,7 +162,7 @@ public class CreateRapportPanelRP extends JPanel {
 							filteredRecus.add(recus.get(i));
 					}
 
-					
+					System.out.println(recus);
 					Collections.sort(filteredRecus);
 					for (int i = 0; i < filteredRecus.size(); i++) {
 						Recu item = filteredRecus.get(i);
@@ -168,32 +175,32 @@ public class CreateRapportPanelRP extends JPanel {
 				}
 				
 				
-				if (validDateDebut && validDateFin && debut != null && fin != null && currentPane == "Achat") {
+				if (validDateDebut && validDateFin && debut != null && fin != null && currentPane == "Paiement") {
 					Fournisseur f = Filter.getFournisseur(comboBox.getSelectedItem().toString());
 
-					ArrayList<Achat> achats = Filter.findFournisseurAchats(f);
-					ArrayList<Achat> filteredAchats = new ArrayList<Achat>();
-					String str;
+					ArrayList<Paiement> paiements = Filter.findFournisseurPaiements(f);
+					ArrayList<Paiement> filteredPaiements = new ArrayList<Paiement>();
+			
 					Date date = new Date();
-					for (int i = 0; i < achats.size(); i++) {
-						date = achats.get(i).dateTransaction;
-						if (!debut.after(date) && !fin.before(date))
-							filteredAchats.add(achats.get(i));
+					for (int i = 0; i < paiements.size(); i++) {
+						date = paiements.get(i).dateTransaction;
+						if (!debut.after(date) && !fin.before(date) && paiements.get(i).typePaie.toString() == typePaie)
+							filteredPaiements.add(paiements.get(i));
 					}
 
-					DefaultTableModel model = (DefaultTableModel) table.getModel();
-					Collections.sort(filteredAchats);
-					int i = 0;
-					for (int j = 0; j < filteredAchats.size(); j++) {
-						Achat item = filteredAchats.get(i);
-						((DefaultTableModel) model).setValueAt(item.noTransaction, i, 0);
-						((DefaultTableModel) model).setValueAt(Pattern.format.format(item.dateTransaction), i, 1);
-						((DefaultTableModel) model).setValueAt(item.fournisseur.nomCompte + "(" + item.fournisseur.noCompte + ")",
-								i, 2);
-						((DefaultTableModel) model).setValueAt(item.montant, i, 3);
-						i++;
+			
+					Collections.sort(filteredPaiements);
+					for (int i = 0; i < filteredPaiements .size(); i++) {
+						Paiement item = filteredPaiements.get(i);
+						tabmod.setValueAt(item.noTransaction, i, 0);
+						tabmod.setValueAt(Pattern.format.format(item.dateTransaction), i, 1);
+						tabmod.setValueAt(item.fournisseur.nomCompte + "(" + item.fournisseur.noCompte + ")", i, 2);
+						tabmod.setValueAt(item.montant, i, 3);
+						tabmod.setValueAt(item.typePaie, i, 4);
 					}
 				}
+				
+				
 			}
 
 		}

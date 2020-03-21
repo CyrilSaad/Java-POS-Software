@@ -42,8 +42,8 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 	
 	public String toString() {
 		return 
-				"Date de la transaction:" + dateTransaction + 
-				"	Numéro de la transaction:" + noTransaction +
-				"	Montant total:" + montant;
+				" ID: " + noTransaction +
+				" Date Issue: " + dateTransaction + 
+				" total: " + montant;
 	}
 }

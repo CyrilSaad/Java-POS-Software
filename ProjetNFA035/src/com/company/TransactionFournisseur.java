@@ -11,7 +11,7 @@ abstract class TransactionFournisseur extends Transaction {
 	}
 	public abstract void MiseAJourCompte(double montant);
 	public String toString() {
-		return "" + super.toString() + "\n Fournisseur:" +  fournisseur;
+		return "" + super.toString() + "   Fournisseur:" +   fournisseur.nomCompte + "(" + fournisseur.noCompte + ")";
 		}
 	}
 

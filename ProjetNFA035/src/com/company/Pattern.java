@@ -17,113 +17,169 @@ import javax.swing.table.DefaultTableModel;
 
 public class Pattern {
 	static DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+
 	public static boolean isDouble(String number) {
 		boolean bool = false;
 		try {
 			double d = Double.parseDouble(number);
-			if(d>=0) bool = true;
+			if (d >= 0)
+				bool = true;
 		} catch (NumberFormatException ex) {
 			return false;
 		}
 		return bool;
 	}
 
-	public static boolean isDate(String s) {
-	
+	public static boolean isNumeric(String strNum) {
+		int num;
 
-        // Input to be parsed should strictly follow the defined date format
-        // above.
-        format.setLenient(false);
-  
-       
-        try {
-            format.parse(s);  
-            String yearString = s.substring(6);
-            int year = Integer.parseInt(yearString);
-            if(year>=0 && year<=9999) return true;
-        } catch (ParseException e) {
-            return false;
-        }
-        return false;
+		try {
+			num = Integer.parseInt(strNum);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		if (strNum == null || num < 0) {
+			return false;
+		}
+		return true;
 	}
-	
+
+	public static boolean isDate(String s) {
+
+		// Input to be parsed should strictly follow the defined date format
+		// above.
+		format.setLenient(false);
+
+		try {
+			format.parse(s);
+			String yearString = s.substring(6);
+			int year = Integer.parseInt(yearString);
+			if (year >= 0 && year <= 9999)
+				return true;
+		} catch (ParseException e) {
+			return false;
+		}
+		return false;
+	}
+
 	public static void createClientBox(JComboBox clientComboBox) {
-		
-		Object[] clientData= Files.getComptes().values().toArray();
+
+		Object[] clientData = Files.getComptes().values().toArray();
 		int length = clientData.length;
-		Client arr [] = new Client[length];
-		String [] comboBoxData = new String [length];
-		for(int i=0; i<length; i++) {
-			arr[i] =  (Client) clientData[i];
-			comboBoxData [i] = arr[i].nomCompte + "(" + arr[i].noCompte + ")";
+		Client arr[] = new Client[length];
+		String[] comboBoxData = new String[length];
+		for (int i = 0; i < length; i++) {
+			arr[i] = (Client) clientData[i];
+			comboBoxData[i] = arr[i].nomCompte + "(" + arr[i].noCompte + ")";
 		}
 		DefaultComboBoxModel cbmod = new DefaultComboBoxModel(comboBoxData);
 		clientComboBox.setModel(cbmod);
 	}
-	
-public static void createFournisseurBox(JComboBox fournisseurComboBox) {
-		
-		Object[] clientData= Files.getComptesF().values().toArray();
+
+	public static void createFournisseurBox(JComboBox fournisseurComboBox) {
+
+		Object[] clientData = Files.getComptesF().values().toArray();
 		int length = clientData.length;
-		Fournisseur arr [] = new Fournisseur[length];
-		String [] comboBoxData = new String [length];
-		for(int i=0; i<length; i++) {
-			arr[i] =  (Fournisseur) clientData[i];
-			comboBoxData [i] = arr[i].nomCompte + "(" + arr[i].noCompte + ")";
+		Fournisseur arr[] = new Fournisseur[length];
+		String[] comboBoxData = new String[length];
+		for (int i = 0; i < length; i++) {
+			arr[i] = (Fournisseur) clientData[i];
+			comboBoxData[i] = arr[i].nomCompte + "(" + arr[i].noCompte + ")";
 		}
 		DefaultComboBoxModel cbmod = new DefaultComboBoxModel(comboBoxData);
 		fournisseurComboBox.setModel(cbmod);
-		
+
 	}
 
-public static void createCategorieBox(JComboBox box) {
-	
-	Object[] data= Files.getCategories().values().toArray();
-	int length = data.length;
-	Categorie arr [] = new Categorie[length];
-	String [] comboBoxData = new String [length];
-	for(int i=0; i<length; i++) {
-		arr[i] =  (Categorie) data[i];
-		comboBoxData [i] = arr[i].nomCategorie + "(" + arr[i].noCategorie + ")";
+	public static void createCategorieBox(JComboBox box) {
+
+		Object[] data = Files.getCategories().values().toArray();
+		int length = data.length;
+		Categorie arr[] = new Categorie[length];
+		String[] comboBoxData = new String[length];
+		for (int i = 0; i < length; i++) {
+			arr[i] = (Categorie) data[i];
+			comboBoxData[i] = arr[i].nomCategorie + "(" + arr[i].noCategorie + ")";
+		}
+		DefaultComboBoxModel cbmod = new DefaultComboBoxModel(comboBoxData);
+		box.setModel(cbmod);
+
 	}
-	DefaultComboBoxModel cbmod = new DefaultComboBoxModel(comboBoxData);
-	box.setModel(cbmod);
-	
-}
-public static JTable createTable(DefaultTableModel tabmod) {
-	for (int i = 0; i < 20 + TransactionFiles.getTransactionSize(); i++)
-		tabmod.addRow(new Object[] { null, null, null, null });
-	JTable table = new JTable(tabmod);
-	table.setPreferredScrollableViewportSize(new Dimension(500, 300));
-	table.setFillsViewportHeight(true);
-	table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
-	table.setShowGrid(true);
-	table.setGridColor(Color.DARK_GRAY);
-	table.setRowHeight(30);
-	table.getTableHeader().setReorderingAllowed(false);
-	table.setFont(new Font("Serif", Font.BOLD, 25));
-	return table;
-}
 
-public static void validateDate(String dateString, Date date)
- {
-	boolean validDate = Pattern.isDate(dateString);;
+	public static void createArticleBox(JComboBox box) {
 
-	 if(validDate && !dateString.isEmpty()) {
+		Object[] data = Files.getArticle().values().toArray();
+		int length = data.length;
+		Article arr[] = new Article[length];
+		String[] comboBoxData = new String[length];
+		for (int i = 0; i < length; i++) {
+			arr[i] = (Article) data[i];
+			comboBoxData[i] = arr[i].nomArticle + "(" + arr[i].noArticle + ")";
+		}
+		DefaultComboBoxModel cbmod = new DefaultComboBoxModel(comboBoxData);
+		box.setModel(cbmod);
+
+	}
+
+	public static JTable createTable(DefaultTableModel tabmod) {
+		for (int i = 0; i < 20 + TransactionFiles.getTransactionSize(); i++)
+			tabmod.addRow(new Object[] { null, null, null, null });
+		JTable table = new JTable(tabmod);
+		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
+		table.setFillsViewportHeight(true);
+		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+		table.setShowGrid(true);
+		table.setGridColor(Color.DARK_GRAY);
+		table.setRowHeight(30);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setFont(new Font("Serif", Font.BOLD, 25));
+		table.setEnabled(false);
+		return table;
+	}
+
+	public static JTable createTableArticle(DefaultTableModel tabmod) {
+		for (int i = 0; i < 20 + TransactionFiles.getTransactionSize(); i++)
+			tabmod.addRow(new Object[] { null, null, null, null });
+		JTable table = new JTable(tabmod) {
+			public boolean isCellEditable(int row, int column) {
+				if (column == 2 || column == 3)
+					return false;
+				return true;
+			}
+		};
+		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
+		table.setFillsViewportHeight(true);
+		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));
+		table.setShowGrid(true);
+		table.setGridColor(Color.DARK_GRAY);
+		table.setRowHeight(30);
+		table.getTableHeader().setReorderingAllowed(false);
+		table.setFont(new Font("Serif", Font.BOLD, 25));
+		table.setEnabled(false);
+		return table;
+	}
+
+	public static void validateDate(String dateString, Date date) {
+		boolean validDate = Pattern.isDate(dateString);
+		;
+
+		if (validDate && !dateString.isEmpty()) {
 			try {
-				 date = Pattern.format.parse(dateString);
+				date = Pattern.format.parse(dateString);
 			} catch (ParseException e1) {
 				JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",
-						JOptionPane.WARNING_MESSAGE);					
+						JOptionPane.WARNING_MESSAGE);
 			}
 		}
-		
-	 else if (dateString.isEmpty())	JOptionPane.showMessageDialog(null, "Veuillez préciser une date valide", "Champ Obligatoire",JOptionPane.WARNING_MESSAGE);
-	
-	 else if(!validDate && !dateString.isEmpty()) {
-		JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",JOptionPane.ERROR_MESSAGE);			
-	}			
- 
- 
- }
- }
+
+		else if (dateString.isEmpty())
+			JOptionPane.showMessageDialog(null, "Veuillez préciser une date valide", "Champ Obligatoire",
+					JOptionPane.WARNING_MESSAGE);
+
+		else if (!validDate && !dateString.isEmpty()) {
+			JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",
+					JOptionPane.ERROR_MESSAGE);
+		}
+
+	}
+}
