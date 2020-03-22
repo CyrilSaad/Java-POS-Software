@@ -1,6 +1,5 @@
 package com.company;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 abstract class TransactionClient extends Transaction {
@@ -13,6 +12,7 @@ abstract class TransactionClient extends Transaction {
 		}
 	abstract void MiseAJourCompte(double montant);
 	
+	@Override
 	public String toString() {
 		return "" + super.toString() + "	Client:" +  client.nomCompte + "(" + client.noCompte + ")";
 	}

@@ -14,11 +14,13 @@ public class Achat extends TransactionFournisseur {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
 	public void MiseAJourCompte(double montant) {
-		fournisseur.debiter(montant);
+		Files.debiterFournisseur(fournisseur, montant);
 		
 	}
 
+	@Override
 	public String toString() {
 		return super.toString() + "\n Nouveau solde: " + fournisseur.solde; 
 	}

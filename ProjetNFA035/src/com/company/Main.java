@@ -1,22 +1,10 @@
 package com.company;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.table.DefaultTableModel;
-
-import com.sun.javafx.collections.MappingChange.Map;
-
-import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.layout.Border;
-
 import java.awt.*;
-import java.awt.TextArea;
 import java.awt.event.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Main {
 	String versionNumber = "0.0.1";
@@ -146,6 +134,7 @@ public class Main {
 	}
 
 	public class menuListener implements ActionListener {
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object event = e.getSource();
 			if (event == create[0]) {
@@ -214,7 +203,7 @@ public class Main {
 				frame.repaint();
 				currentPane = articlePanel;
 			}  else if (event == rapport[6]) {
-				frame.setContentPane(rapportArticlePanel  = new CreateRapportPanelArticle());
+				frame.setContentPane(rapportArticlePanel  = new CreateRapportPanelArticle(frame));
 				frame.validate();
 				frame.repaint();
 				currentPane = rapportArticlePanel;

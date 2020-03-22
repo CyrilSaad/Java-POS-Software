@@ -1,6 +1,5 @@
 package com.company;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 abstract class TransactionFournisseur extends Transaction {
@@ -10,6 +9,7 @@ abstract class TransactionFournisseur extends Transaction {
 		fournisseur = f;
 	}
 	public abstract void MiseAJourCompte(double montant);
+	@Override
 	public String toString() {
 		return "" + super.toString() + "   Fournisseur:" +   fournisseur.nomCompte + "(" + fournisseur.noCompte + ")";
 		}

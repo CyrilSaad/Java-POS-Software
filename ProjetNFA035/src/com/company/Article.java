@@ -20,9 +20,11 @@ public class Article implements Serializable, Comparable {
 		this.categorie = cat;
 		noArticle = noSerie;
 	}
+	@Override
 	public String toString() {
-		return "Nom Article: " + nomArticle + "  No. Article: " + noArticle;
+		return nomArticle + "(" +noArticle + ")";
 	}
+	@Override
 	public int compareTo(Object o) {
 		// TODO Auto-generated method stub
 		return 0;

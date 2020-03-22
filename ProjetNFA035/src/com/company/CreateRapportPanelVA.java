@@ -3,7 +3,6 @@ package com.company;
 import java.awt.BorderLayout;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -152,10 +151,10 @@ public class CreateRapportPanelVA extends JPanel {
 			
 					for (int i = 0; i < filteredVentes.size(); i++) {
 						Vente item = filteredVentes.get(i);
-						((DefaultTableModel) model).setValueAt(item.noTransaction, i, 0);
-						((DefaultTableModel) model).setValueAt(Pattern.format.format(item.dateTransaction), i, 1);
-						((DefaultTableModel) model).setValueAt(item.client.nomCompte + "(" + item.client.noCompte + ")", i, 2);
-						((DefaultTableModel) model).setValueAt(item.montant, i, 3);
+						model.setValueAt(item.noTransaction, i, 0);
+						model.setValueAt(Pattern.format.format(item.dateTransaction), i, 1);
+						model.setValueAt(item.client.nomCompte + "(" + item.client.noCompte + ")", i, 2);
+						model.setValueAt(item.montant, i, 3);
 					}
 				}
 				
@@ -178,11 +177,11 @@ public class CreateRapportPanelVA extends JPanel {
 					int i = 0;
 					for (int j = 0; j < filteredAchats.size(); j++) {
 						Achat item = filteredAchats.get(i);
-						((DefaultTableModel) model).setValueAt(item.noTransaction, i, 0);
-						((DefaultTableModel) model).setValueAt(Pattern.format.format(item.dateTransaction), i, 1);
-						((DefaultTableModel) model).setValueAt(item.fournisseur.nomCompte + "(" + item.fournisseur.noCompte + ")",
+						model.setValueAt(item.noTransaction, i, 0);
+						model.setValueAt(Pattern.format.format(item.dateTransaction), i, 1);
+						model.setValueAt(item.fournisseur.nomCompte + "(" + item.fournisseur.noCompte + ")",
 								i, 2);
-						((DefaultTableModel) model).setValueAt(item.montant, i, 3);
+						model.setValueAt(item.montant, i, 3);
 						i++;
 					}
 				}

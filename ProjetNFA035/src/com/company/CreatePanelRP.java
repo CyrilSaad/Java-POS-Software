@@ -15,8 +15,6 @@ import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -26,16 +24,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableModel;
-
-import com.company.Compte.EtatCompte;
 import com.company.Transaction.TypePaie;
 
 public class CreatePanelRP extends JPanel {
@@ -268,6 +261,7 @@ public class CreatePanelRP extends JPanel {
 						Client c =  Filter.getClient(comboBox.getSelectedItem().toString());
 						enregistrer.setEnabled(true);
 						Recu r = new Recu(date, montant, c);
+						r.MiseAJourCompte(montant);
 						r.description = textFields[1].getText();
 						String etatCompte = bg.getSelection().getActionCommand();
 						switch (etatCompte) {
@@ -365,6 +359,7 @@ public class CreatePanelRP extends JPanel {
 									"Enregistrement de la reçu", JOptionPane.INFORMATION_MESSAGE);
 							for (int i = 0; i < textFields.length; i++)
 								textFields[i].setText("");
+							p.MiseAJourCompte(montant);
 							TransactionFiles.createPaiement(p.noTransaction, p);
 							enregistrer.setEnabled(false);
 							creer.setEnabled(true);

@@ -8,12 +8,12 @@ public class Filter {
 		int noClient = Integer.parseInt(s.substring(s.indexOf("(")+1, s.indexOf(")")));
 		Object[] arr= Files.getComptes().values().toArray();
 		Client c = null;
-		Client[] clientData = (Client[]) new Client[arr.length];
+		Client[] clientData = new Client[arr.length];
 		
 		for(int i=0; i<clientData.length; i++) {
 			clientData[i] = (Client) arr[i];
 			if(noClient == clientData[i].noCompte) {
-				c = (Client) clientData[i];
+				c = clientData[i];
 			}
 		}//endloop
 		return c;
@@ -23,12 +23,12 @@ public class Filter {
 		int noFournisseur = Integer.parseInt(s.substring(s.indexOf("(")+1, s.indexOf(")")));
 		Object[] arr= Files.getComptesF().values().toArray();
 		Fournisseur f = null;
-		Fournisseur[] fournisseurData = (Fournisseur[]) new Fournisseur[arr.length];
+		Fournisseur[] fournisseurData = new Fournisseur[arr.length];
 		
 		for(int i=0; i<fournisseurData.length; i++) {
 			fournisseurData[i] = (Fournisseur) arr[i];
 			if(noFournisseur == fournisseurData[i].noCompte ) {
-				f = (Fournisseur) fournisseurData[i];
+				f = fournisseurData[i];
 			}
 		}//endloop
 		return f;
@@ -75,7 +75,6 @@ public class Filter {
 			
 			
 		}//end loop
-		System.out.println("haha");
 		return  achatsFournisseur;
 	}
 
@@ -92,7 +91,6 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 			
 			
 		}//end loop
-		System.out.println("haha");
 		return  paiementsFournisseur;
 	}
 	public static void setListClientVentes(JList list, JComboBox cb){
@@ -240,7 +238,7 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 //			
 //			
 //		}//end loop
-//		System.out.println("haha");
+//		 ln("haha");
 //		return  articles;
 //	}
 
@@ -250,12 +248,12 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 		int noCategorie = Integer.parseInt(s.substring(s.indexOf("(")+1, s.indexOf(")")));
 		Object[] arr= Files.getCategories().values().toArray();
 		Categorie c = null;
-		Categorie[] categorieData = (Categorie[]) new Categorie[arr.length];
+		Categorie[] categorieData = new Categorie[arr.length];
 		
 		for(int i=0; i<categorieData.length; i++) {
 			categorieData[i] = (Categorie) arr[i];
 			if(noCategorie == categorieData[i].noCategorie ) {
-				c = (Categorie) categorieData[i];
+				c = categorieData[i];
 			}
 		}//endloop
 		return c ;
@@ -266,16 +264,47 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 		int noArticle = Integer.parseInt(s.substring(s.indexOf("(")+1, s.indexOf(")")));
 		Object[] arr= Files.getArticle().values().toArray();
 		Article a = null;
-		Article[] categorieData = (Article[]) new Article[arr.length];
+		Article[] categorieData = new Article[arr.length];
 		
 		for(int i=0; i<categorieData.length; i++) {
 			categorieData[i] = (Article) arr[i];
 			if(noArticle == categorieData[i].noArticle ) {
-				a = (Article) categorieData[i];
+				a = categorieData[i];
 			}
 		}//endloop
 		return a;
 
 	}
+
+	public static ArrayList getArticleDetailVentes(Article a) {
+		// TODO Auto-generated method stub
+		ArrayList <DetailVente> ventes = new ArrayList(TransactionFiles.getDetailVente());
+		ArrayList<DetailVente> trs = new ArrayList<DetailVente>();
+	
+		for(int i=0; i<ventes.size(); i++) {
+				if(a.noArticle == ventes.get(i).article.noArticle) {
+				trs.add(ventes.get(i));
+			}	
+		}//end loop
+	
+		return  trs;
+	}
+	
+	public static ArrayList getArticleDetailAchats(Article a) {
+
+		// TODO Auto-generated method stub
+		ArrayList <DetailAchat> achats = new ArrayList(TransactionFiles.getDetailAchat());
+		ArrayList<DetailAchat> trs = new ArrayList<DetailAchat>();
+	
+		for(int i=0; i<achats.size(); i++) {
+				if(a.noArticle == achats.get(i).article.noArticle) {
+				trs.add(achats.get(i));
+			}	
+		}//end loop
+	
+		return  trs;
+	
+	}
+	
 }
 //huhu(6)

@@ -1,10 +1,7 @@
 package com.company;
 import java.util.*;
 
-import com.company.Compte.EtatCompte;
-
 import java.io.*;
-import java.time.*;
 public abstract class Transaction implements Serializable, Comparable<Transaction> {
 	static int noSerie = TransactionFiles.getTransactionsSize();
 	int noTransaction =0;
@@ -28,6 +25,7 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 		typePaie = e;}
 	
 	
+	@Override
 	public int compareTo(Transaction t) {
 		int i = description.compareTo(t.description);
 	    if (i != 0) return i;
@@ -40,6 +38,7 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
  }
 	 
 	
+	@Override
 	public String toString() {
 		return 
 				" ID: " + noTransaction +

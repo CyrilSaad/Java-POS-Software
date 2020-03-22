@@ -1,7 +1,6 @@
 package com.company;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Ville implements Serializable, Comparable<Ville> {
 	static int noSerie = 0;
@@ -26,13 +25,15 @@ public class Ville implements Serializable, Comparable<Ville> {
 		}
 		return v;
 	}
+	@Override
 	public int compareTo(Ville v) {
 		if(nomVille.compareTo(v.nomVille) == 1) return 1;
 		else if(nomVille.compareTo(v.nomVille) == -1) return -1;
 		else return 0;
 	}
 	
-	 public String toString() {
+	 @Override
+	public String toString() {
 		return "" + nomVille + "(" + noVille + ")";
 	}
 

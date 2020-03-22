@@ -1,6 +1,5 @@
 package com.company;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public class Vente extends TransactionClient {
@@ -16,14 +15,20 @@ public class Vente extends TransactionClient {
 		{super(d, m, c);}
 
 	@Override
-	 void MiseAJourCompte(double d) {
-		client.debiter(d);
+	 public void MiseAJourCompte(double d) {
+		Files.debiterClient(client, d);
 		
 	}
 	
+	double calculerTotalVente() {
+		return montant;
+		
+	}
 	
-	
-	
+	@Override
+	public String toString() {
+		return super.toString() + "\n Nouveau solde: " + client.solde; 
+	}
 	
 
 }

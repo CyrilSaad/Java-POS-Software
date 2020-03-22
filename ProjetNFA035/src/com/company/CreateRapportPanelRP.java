@@ -2,7 +2,6 @@
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -162,7 +161,6 @@ public class CreateRapportPanelRP extends JPanel {
 							filteredRecus.add(recus.get(i));
 					}
 
-					System.out.println(recus);
 					Collections.sort(filteredRecus);
 					for (int i = 0; i < filteredRecus.size(); i++) {
 						Recu item = filteredRecus.get(i);

@@ -1,6 +1,5 @@
 package com.company;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public class Recu extends TransactionClient {
@@ -14,7 +13,7 @@ static final long serialVersionUID = 1L;
 
 	@Override
 	void MiseAJourCompte(double montant) {
-		client.crediter(montant);
+		Files.crediterClient(client, montant);
 
 	}
 	

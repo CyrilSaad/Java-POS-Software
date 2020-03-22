@@ -13,8 +13,9 @@ public Categorie(String name) {
 	nomCategorie = name;
 }
 
+@Override
 public String toString() {
-	return "Nom Catégorie: " + nomCategorie + "  No. Catégorie: " + noCategorie;
+	return nomCategorie + "(" + noCategorie + ")";
 }
 
 }

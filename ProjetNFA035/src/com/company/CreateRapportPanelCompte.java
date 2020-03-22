@@ -2,13 +2,11 @@ package com.company;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
@@ -28,7 +26,6 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
@@ -180,7 +177,7 @@ public class CreateRapportPanelCompte extends JPanel {
 				}
 
 				else if (dateDebutString.isEmpty() || dateFinString.isEmpty())
-					JOptionPane.showMessageDialog(null, "Veuillez préciser la date de l'achat", "Champ Obligatoire",
+					JOptionPane.showMessageDialog(null, "Veuillez préciser une date!", "Champ Obligatoire",
 							JOptionPane.WARNING_MESSAGE);
 
 				else if ((!validDateDebut && !dateDebutString.isEmpty())

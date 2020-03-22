@@ -11,9 +11,9 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-
-import com.company.Compte.EtatCompte;
 
 public class CreatePanelCategorie extends JPanel {
 	JFrame frame;
@@ -21,8 +21,9 @@ public class CreatePanelCategorie extends JPanel {
 	JButton creer, enregistrer, quitter;
 	ButtonGroup bg;
 	JList articleList;
-	DefaultTableModel tabmod;
-
+	JTable table = new JTable();
+	boolean validQty, validMontant = false;
+	boolean validPrice, validCout;
 	CreatePanelCategorie(String ss, JFrame frame) {
 		this.frame = frame;
 		JPanel parentPanel, buttonPanel;
@@ -45,7 +46,15 @@ public class CreatePanelCategorie extends JPanel {
 
 		this.setLayout(new BorderLayout());
 
-		DefaultTableModel tabmod = new DefaultTableModel();
+		DefaultTableModel tabmod = new DefaultTableModel() {
+			
+			    @Override 
+			    public boolean isCellEditable(int row, int column)
+			    {
+			    	 return column == 2 || column==4 ? true : false;
+			    }
+			
+		};
 		for (int i = 0; i < 20; i++)
 			tabmod.addRow(new Object[] { null, null, null, null });
 		tabmod.addColumn("No. Article");
@@ -55,7 +64,65 @@ public class CreatePanelCategorie extends JPanel {
 		tabmod.addColumn("Cout Achat");
 		tabmod.addColumn("Profit");
 
-		JTable table = Pattern.createTable(tabmod);
+		table = Pattern.createTable(tabmod);
+		
+		table.getModel().addTableModelListener(new TableModelListener() {
+			@Override
+			public void tableChanged(TableModelEvent e) {
+				try {
+					Article item = Filter.getArticle(combobox.getSelectedItem().toString());
+					int qty = 0;
+					double price = 0;
+
+					if (e.getColumn() == 0) {
+						if (item == null) {
+							for (int i = 0; i < table.getColumnCount(); i++)
+								table.setValueAt(null, e.getLastRow(), i++); 
+						}
+						if (item != null) {
+							
+							table.setValueAt(item.noArticle, e.getLastRow(), 0);
+							table.setValueAt(item.nomArticle, e.getLastRow(), 1);
+							table.setValueAt(item.qteStock, e.getLastRow(), 2);
+							table.setValueAt(item.prixVenteParUnite, e.getLastRow(), 3);
+							table.setValueAt(item.coutAchatParUnite, e.getLastRow(), 4);
+							table.setValueAt(item.tauxProfit*100 +"%", e.getLastRow(), 5);
+							qty = Integer.parseInt(table.getValueAt(e.getLastRow(), 2).toString());
+							price = Double.parseDouble(table.getValueAt(e.getLastRow(), 3).toString());
+						}
+
+					} // edit row on Article change
+
+					if (e.getColumn() == 2 || e.getColumn() == 4) {
+						String montantText = table.getValueAt(e.getLastRow(), 4).toString();
+						validMontant = Pattern.isDouble(montantText);
+						String quantityText = table.getValueAt(e.getLastRow(), 2).toString();
+						validQty = Pattern.isNumeric(quantityText);
+
+						if (!validMontant | !validQty) {
+							JOptionPane.showMessageDialog(null, "Numéro non valide!", "Erreur",
+									JOptionPane.ERROR_MESSAGE);
+							table.setValueAt(0, e.getLastRow(), 1);
+							table.setValueAt(0, e.getLastRow(), 2);
+							table.setValueAt(0, e.getLastRow(), 3);
+						}
+
+						if (validMontant && validQty) {
+							price = Double.parseDouble(montantText);
+							qty = Integer.parseInt(quantityText);
+							double sellingPrice = price + price*item.tauxProfit;
+							table.setValueAt(sellingPrice, e.getLastRow(), 3);
+//							textFields[3].setText(qty * price + "");
+						}
+
+					}
+
+				} catch (Exception ex) {
+				}
+
+			}
+		});
+		
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();
@@ -100,8 +167,7 @@ public class CreatePanelCategorie extends JPanel {
 		childDisplayPanel.add(textFields[0], gbc);
 
 		JLabel description = new JLabel("Nom Catégorie: ");
-		gbc.gridx = 0;
-		gbc.gridy = 1;
+		gbc.gridy = 1; gbc.gridx = 0;
 		childDisplayPanel.add(description, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 1;
@@ -121,6 +187,7 @@ public class CreatePanelCategorie extends JPanel {
 		// forLoop arrayList into ListModel .setModel()
 		articleList = new JList(listModel);
 		articleList.addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent evt) {
 				articleListValueChanged(evt);
 			}
@@ -151,7 +218,6 @@ public class CreatePanelCategorie extends JPanel {
 
 	private class initPanelCategorie implements ActionListener {
 
-
 		@Override
 		public void actionPerformed(ActionEvent e) {
 
@@ -170,31 +236,40 @@ public class CreatePanelCategorie extends JPanel {
 			}
 
 			if (eventSource == enregistrer) {
-				String name = textFields[1].getText();
-				boolean nameErr = Main.isName(name);
-				if (!nameErr && !name.isEmpty())
-					JOptionPane.showMessageDialog(null,
-							"Le champ 'Nom Catégorie' doit uniquement contenir des lettres!");
-				else if (name.isEmpty())
-					JOptionPane.showMessageDialog(null, "Le champ 'Nom Catégorie' ne doit pas être vide!",
-							"Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
+				if (articleList.isSelectionEmpty()) {
+
+					String name = textFields[1].getText();
+					boolean nameErr = Main.isName(name);
+					if (!nameErr && !name.isEmpty())
+						JOptionPane.showMessageDialog(null,
+								"Le champ 'Nom Catégorie' doit uniquement contenir des lettres!");
+					else if (name.isEmpty())
+						JOptionPane.showMessageDialog(null, "Le champ 'Nom Catégorie' ne doit pas être vide!",
+								"Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
+					else {
+						Categorie c = new Categorie(name);
+						enregistrer.setEnabled(true);
+						JOptionPane.showMessageDialog(null, "Catégorie enregistrée avec succès",
+								"Enregistrement du catégorie", JOptionPane.INFORMATION_MESSAGE);
+						for (int i = 0; i < textFields.length; i++)
+							textFields[i].setText("");
+						Files.createCategorie(c.noCategorie, c);
+						enregistrer.setEnabled(false);
+						creer.setEnabled(true);
+					}
+				} 
 				else {
-					Categorie c = new Categorie(name);
-					enregistrer.setEnabled(true);
-					JOptionPane.showMessageDialog(null, "Catégorie enregistrée avec succès",
-							"Enregistrement du catégorie", JOptionPane.INFORMATION_MESSAGE);
-					for (int i = 0; i < textFields.length; i++)
-						textFields[i].setText("");
-					Files.createCategorie(c.noCategorie, c);
-					enregistrer.setEnabled(false);
-					creer.setEnabled(true);
+					
 				}
-			}
+			} // end enregis
+
 			Filter.setListCategorie(articleList);
 		}
 	}
 
 	private void articleListValueChanged(ListSelectionEvent evt) {
+
+		DefaultTableModel tabmod = (DefaultTableModel) table.getModel();
 		for (int i = 0; i < tabmod.getRowCount(); i++) {
 			tabmod.setValueAt(null, i, 0);
 			tabmod.setValueAt(null, i, 1);
@@ -205,18 +280,17 @@ public class CreatePanelCategorie extends JPanel {
 		}
 		if (!articleList.getValueIsAdjusting()) {
 			Categorie c = (Categorie) articleList.getSelectedValue();
-			ArrayList<Article> articles =  Filter.getCategorieArticles(c);
+			ArrayList<Article> articles = Filter.getCategorieArticles(c);
 
 			for (int i = 0; i < articles.size(); i++) {
 				Article item = articles.get(i);
-				System.out.println(item); 
 				tabmod.setValueAt(item.noArticle, i, 0);
 				tabmod.setValueAt(item.nomArticle, i, 1);
 				tabmod.setValueAt(item.qteStock, i, 2);
 				tabmod.setValueAt(item.prixVenteParUnite, i, 3);
 				tabmod.setValueAt(item.coutAchatParUnite, i, 4);
-				tabmod.setValueAt(item.tauxProfit*100+"%", i, 5);
-	
+				tabmod.setValueAt(item.tauxProfit * 100 + "%", i, 5);
+
 			}
 		}
 

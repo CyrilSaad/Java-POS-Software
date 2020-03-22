@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.DefaultComboBoxModel;
@@ -133,7 +134,7 @@ public class Pattern {
 		table.setRowHeight(30);
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setFont(new Font("Serif", Font.BOLD, 25));
-		table.setEnabled(false);
+//		table.setEnabled(false);
 		return table;
 	}
 
@@ -141,6 +142,7 @@ public class Pattern {
 		for (int i = 0; i < 20 + TransactionFiles.getTransactionSize(); i++)
 			tabmod.addRow(new Object[] { null, null, null, null });
 		JTable table = new JTable(tabmod) {
+			@Override
 			public boolean isCellEditable(int row, int column) {
 				if (column == 2 || column == 3)
 					return false;
@@ -181,5 +183,18 @@ public class Pattern {
 					JOptionPane.ERROR_MESSAGE);
 		}
 
+	}
+
+	public static JComboBox createArticleBox(Categorie item) {
+		// TODO Auto-generated method stub\
+		DefaultComboBoxModel mod = new DefaultComboBoxModel();		
+	ArrayList<Article> articles = Filter.getCategorieArticles(item);
+		for (int i = 0; i < articles.size(); i++) {
+			mod.addElement(articles.get(i).nomArticle + "(" + articles.get(i).noArticle + ")");
+
+			// do something with object
+		}
+
+		return null;
 	}
 }

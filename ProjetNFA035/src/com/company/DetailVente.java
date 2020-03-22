@@ -1,29 +1,28 @@
 package com.company;
 
-public class DetailVente {
-	Vente vente;
+import java.io.Serializable;
+
+public class DetailVente implements Serializable, Comparable<DetailVente> {
 	Article article;
+	Vente vente;
 	int quantite;
-	DetailVente(Article a, Vente v, int quantity) {
-		article = a;
-		vente = v;
-		quantite = quantity;
+		DetailVente(Article article, Vente Vente, int qty) {
+			this.article = article;
+			this.vente = Vente;
+			this.quantite = qty;
+		}
+	double calculerMontant () {		return quantite * article.prixVenteParUnite;
 	}
-	
-	
-	public String toString() {
-		return "Vente:\t:" + vente + "\nArticle:\t" + article + "\nQuantité:\t" + quantite;
-	}
-	
-	double calculerMontant(){
-		return quantite* article.prixVenteParUnite;
-	}
-	
-	public int compareTo(Object o) {
+	@Override
+	public int compareTo(DetailVente da) {
 		int comp = 0;
-		DetailAchat da = (DetailAchat) o;
 		if(this.calculerMontant() > da.calculerMontant()) comp = 1;
 		else if(this.calculerMontant() < da.calculerMontant()) comp = -1;
 		return comp;
 	}
+	@Override
+	public String toString() {
+		return "Vente:\t:" + vente + "\nArticle:\t" + article + "\nQuantité:\t" + quantite;
+	}
+	
 }

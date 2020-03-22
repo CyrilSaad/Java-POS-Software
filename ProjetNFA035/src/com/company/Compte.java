@@ -1,5 +1,4 @@
 package com.company;
-import java.util.*;
 import java.io.*;
 
 
@@ -30,6 +29,7 @@ public abstract class Compte implements Serializable, Comparable<Compte> {
 	abstract void debiter(double d);
 	abstract void crediter(double d);
 	
+	@Override
 	public int compareTo (Compte c) {
 		int comp = 0 ;
 		if(nomCompte.compareTo(c.nomCompte) == 1) comp = 1;
@@ -37,6 +37,7 @@ public abstract class Compte implements Serializable, Comparable<Compte> {
 		return comp;
 	}
 	
+	@Override
 	public String toString() {
 		return "Nom Compte: " + nomCompte + "  Numéro Compte: " + noCompte +  "  Solde: " + solde +  "  Etat du compte: " + etat;
 	}

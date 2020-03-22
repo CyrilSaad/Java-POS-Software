@@ -10,10 +10,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -26,9 +25,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -39,7 +39,9 @@ public class CreatePanelArticle extends JPanel {
 	JButton creer, enregistrer, quitter;
 	JComboBox combobox = new JComboBox();
 	JList transactionList;
-	JTable table;
+	JTable table = new JTable();
+	DefaultTableModel tabmod;
+	boolean validMontant, validQty;
 	CreatePanelArticle(String ss, JFrame frame) {
 
 		this.frame = frame;
@@ -59,7 +61,7 @@ public class CreatePanelArticle extends JPanel {
 	
 		this.setLayout(new BorderLayout());
 
-		DefaultTableModel tabmod = new DefaultTableModel();
+		 tabmod = new DefaultTableModel();
 
 		tabmod.addColumn("No Trs");
 		tabmod.addColumn("Type Trs");
@@ -68,6 +70,7 @@ public class CreatePanelArticle extends JPanel {
 		tabmod.addColumn("Prix/Cout");
 		tabmod.addColumn("Total");
 		for(int i=0; i<20; i++) tabmod.addRow(new Object[] {null,null,null,null});
+		
 		 table = Pattern.createTableArticle(tabmod);
 		JScrollPane scrollPane = new JScrollPane(table);
 
@@ -156,6 +159,12 @@ public class CreatePanelArticle extends JPanel {
 
 		// forLoop arrayList into ListModel .setModel()
 		 transactionList = new JList();
+		 transactionList.addListSelectionListener(new ListSelectionListener() {
+				@Override
+				public void valueChanged(ListSelectionEvent evt) {
+					transactionListValueChanged(evt);
+				}
+			});
 		JScrollPane listScroller = new JScrollPane(transactionList);
 		// listScroller.add
 		listScroller.setPreferredSize(new Dimension(500, 500));
@@ -187,7 +196,7 @@ public class CreatePanelArticle extends JPanel {
 	
 			Object eventSource = e.getSource();
 				if(eventSource == creer) {
-					Filter.setListClient(transactionList);
+					Filter.setListCategorie(transactionList);
 					if(combobox.getSelectedItem() == null) JOptionPane.showMessageDialog(null, "Pas de catégorie choisi", "Champ Manquant", JOptionPane.WARNING_MESSAGE);
 					else {
 						combobox.setSelectedIndex(0);
@@ -204,56 +213,55 @@ public class CreatePanelArticle extends JPanel {
 					table.getModel().addTableModelListener(new TableModelListener() {
 						@Override
 						public void tableChanged(TableModelEvent e) {
-//							try {
-//								Article item = Filter.getArticle(table.getValueAt(e.getLastRow(), 0).toString());
-//								int qty = 0;
-//								double price = 0;
-//
-//								if (e.getColumn() == 0) {
-//									if (item == null) {
-//										for (int i = 0; i < table.getColumnCount(); i++)
-//											table.setValueAt(null, e.getLastRow(), i++); // In case of clicking on empty
-//																							// cell,
-//																							// handles null pointer
-//																							// exception
-//									}
-//									if (item != null) {
-//										table.setValueAt(item.noArticle, e.getLastRow(), 1);	
-//										table.setValueAt(item, e.getLastRow(), 1);	
-//										table.setValueAt(item.prixVenteParUnite, e.getLastRow(), 2);										
-//										qty = Integer.parseInt(table.getValueAt(e.getLastRow(), 1).toString());
-//										price = Double.parseDouble(table.getValueAt(e.getLastRow(), 2).toString());
-//										table.setValueAt((qty * price), e.getLastRow(), 3);
-//									}
-//
-//								} // edit row on Article change
-//
-//								if (e.getColumn() == 1 || e.getColumn() == 2) {
-//									String montantText = table.getValueAt(e.getLastRow(), 2).toString();
-//									validMontant = Pattern.isDouble(montantText);
-//									String quantityText = table.getValueAt(e.getLastRow(), 1).toString();
-//									validQty = Pattern.isNumeric(quantityText);
-//
-//									if (!validMontant | !validQty) {
-//										JOptionPane.showMessageDialog(null, "Numéro non valide!", "Erreur",
-//												JOptionPane.ERROR_MESSAGE);
-//										table.setValueAt(0, e.getLastRow(), 2);
-//										table.setValueAt(0, e.getLastRow(), 1);
-//										table.setValueAt(0, e.getLastRow(), 3);
-//									}
-//
-//									if (validMontant && validQty) {
-//										price = Double.parseDouble(montantText);
-//										qty = Integer.parseInt(quantityText);
-//										table.setValueAt((qty * price), e.getLastRow(), 3);
-//										textFields[3].setText(qty * price + "");
-//									}
-//
-//								}
-//
-//							} catch (Exception ex) {
-//								System.out.println();
-//							}
+							try {
+								Article item = Filter.getArticle(table.getValueAt(e.getLastRow(), 0).toString());
+								int qty = 0;
+								double price = 0;
+
+								if (e.getColumn() == 0) {
+									if (item == null) {
+										for (int i = 0; i < table.getColumnCount(); i++)
+											table.setValueAt(null, e.getLastRow(), i++); // In case of clicking on empty
+																							// cell,
+																							// handles null pointer
+																							// exception
+									}
+									if (item != null) {
+										table.setValueAt(item.noArticle, e.getLastRow(), 1);	
+										table.setValueAt(item, e.getLastRow(), 1);	
+										table.setValueAt(item.prixVenteParUnite, e.getLastRow(), 2);										
+										qty = Integer.parseInt(table.getValueAt(e.getLastRow(), 3).toString());
+										price = Double.parseDouble(table.getValueAt(e.getLastRow(), 4).toString());
+										table.setValueAt((qty * price), e.getLastRow(), 5);
+									}
+
+								} // edit row on Article change
+
+								if (e.getColumn() == 3 || e.getColumn() == 4 || e.getColumn() == 5) {
+									String montantText = table.getValueAt(e.getLastRow(), 4).toString();
+									validMontant = Pattern.isDouble(montantText);
+									String quantityText = table.getValueAt(e.getLastRow(), 3).toString();
+									validQty = Pattern.isNumeric(quantityText);
+
+									if (!validMontant | !validQty) {
+										JOptionPane.showMessageDialog(null, "Numéro non valide!", "Erreur",
+												JOptionPane.ERROR_MESSAGE);
+										table.setValueAt(0, e.getLastRow(), 5);
+										table.setValueAt(0, e.getLastRow(), 4);
+										table.setValueAt(0, e.getLastRow(), 3);
+									}
+
+									if (validMontant && validQty) {
+										price = Double.parseDouble(montantText);
+										qty = Integer.parseInt(quantityText);
+										table.setValueAt((qty * price), e.getLastRow(), 5);
+										textFields[3].setText(qty * price + "");
+									}
+
+								}
+
+							} catch (Exception ex) {
+							}
 
 						}
 					});
@@ -287,10 +295,11 @@ public class CreatePanelArticle extends JPanel {
 						Article a = new Article(name, profit, cat);
 					enregistrer.setEnabled(true);
 						JOptionPane.showMessageDialog(null,"Article enregistré avec succès", "Enregistrement de l'article",JOptionPane.INFORMATION_MESSAGE);
-						for(int i=0; i<textFields.length; i++) textFields[i].setText(" ");
+						a.tauxProfit = Double.parseDouble(textFields[5].getText());
 						Files.createArticle(a.noArticle, a);
 						enregistrer.setEnabled(false);
 						creer.setEnabled(true);
+						for(int i=0; i<textFields.length; i++) textFields[i].setText(" ");
 						Filter.setListCategories(transactionList, combobox);
 					}
 				}
@@ -303,5 +312,45 @@ public class CreatePanelArticle extends JPanel {
 			}
 		}
 
+	private void transactionListValueChanged(ListSelectionEvent evt) {
+		for (int i = 0; i < tabmod.getRowCount(); i++) {
+			tabmod.setValueAt(null, i, 0);
+			tabmod.setValueAt(null, i, 1);
+			tabmod.setValueAt(null, i, 2);
+			tabmod.setValueAt(null, i, 3);
+			tabmod.setValueAt(null, i, 4);
+			tabmod.setValueAt(null, i, 5);
+		}
+
+			if (!transactionList.getValueIsAdjusting()) {
+				Article a = (Article) transactionList.getSelectedValue();
+				ArrayList<DetailVente> ventes = Filter.getArticleDetailVentes(a);
+				ArrayList<DetailAchat> achats = Filter.getArticleDetailAchats(a);
+
+				int j=0;
+				
+				for (int i = 0; i < ventes.size(); i++) {
+					DetailVente item = ventes.get(i);
+					tabmod.setValueAt(item.vente.noTransaction, i, 0);
+					tabmod.setValueAt(item.vente.description, i, 1);
+					tabmod.setValueAt(Pattern.format.format(item.vente.dateTransaction), i, 2);
+					tabmod.setValueAt(item.quantite, i, 3);
+					tabmod.setValueAt(item.article.prixVenteParUnite, i, 4);
+					tabmod.setValueAt(item.calculerMontant(), i, 5);
+					j++;
+				}
+			
+				for(int i = 0; i< achats.size(); i++) {
+					DetailAchat item = achats.get(i);
+					tabmod.setValueAt(item.achat.noTransaction, j, 0);
+					tabmod.setValueAt(item.achat.description, j, 1);
+					tabmod.setValueAt(Pattern.format.format(item.achat.dateTransaction), j, 2);
+					tabmod.setValueAt(item.quantite, j, 3);
+					tabmod.setValueAt(item.article.coutAchatParUnite, j, 4);
+					tabmod.setValueAt(item.calculerMontant(), j, 5);
+					j++;
+				}
+			}
+		}
 	}
 

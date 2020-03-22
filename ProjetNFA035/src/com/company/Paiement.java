@@ -1,6 +1,5 @@
 package com.company;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public class Paiement extends TransactionFournisseur {
@@ -15,12 +14,11 @@ public class Paiement extends TransactionFournisseur {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
 	public void MiseAJourCompte(double montant) {
-		fournisseur.crediter(montant);
+		Files.crediterFournisseur(fournisseur, montant);
 		
 	}
 
-	public String toString() {
-		return super.toString() + "\n Nouveau solde: " + fournisseur.solde; 
-	} 
+//	
 }

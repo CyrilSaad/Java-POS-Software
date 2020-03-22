@@ -5,8 +5,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -14,14 +12,10 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
-import java.util.ArrayList;
-
 import java.util.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -34,15 +28,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
-import com.company.Compte.EtatCompte;
 
 public class CreatePanelVA extends JPanel {
 	JButton creer, enregistrer, quitter;
@@ -76,7 +67,15 @@ public class CreatePanelVA extends JPanel {
 		quitter.addActionListener(new panelInitVA());
 		this.setLayout(new BorderLayout());
 
-		DefaultTableModel tabmod = new DefaultTableModel();
+		DefaultTableModel tabmod = new DefaultTableModel() {
+			
+		    @Override 
+		    public boolean isCellEditable(int row, int column)
+		    {
+		    	 return column == 2 || column == 1 || column == 0 ? true : false;
+		    }
+		
+	};;
 		tabmod.addColumn("Article");
 		tabmod.addColumn("Quantité");
 		tabmod.addColumn(s + " Unit");
@@ -179,9 +178,8 @@ public class CreatePanelVA extends JPanel {
 		this.add(displayPanel, BorderLayout.CENTER);
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
-		if (currentPane == "Vente")
-			Pattern.createClientBox(comboBox);
-		if (currentPane == "Achat")
+		if (currentPane == "Vente")	Pattern.createClientBox(comboBox);
+		 if (currentPane == "Achat")
 			Pattern.createFournisseurBox(comboBox);
 	};
 
@@ -268,7 +266,6 @@ public class CreatePanelVA extends JPanel {
 									}
 
 								} catch (Exception ex) {
-									System.out.println();
 								}
 
 							}
@@ -292,7 +289,7 @@ public class CreatePanelVA extends JPanel {
 									"Date invalide", JOptionPane.WARNING_MESSAGE);
 						}
 					}
-					else if (montant <= 0 && !dateString.isEmpty())
+					else if ( (montant <= 0d || textFields[3].getText() == "0") && !dateString.isEmpty() )
 						JOptionPane.showMessageDialog(null, "Choisisez un article!", "Champ invalide",	JOptionPane.ERROR_MESSAGE);
 					else if (dateString.isEmpty())
 						JOptionPane.showMessageDialog(null, "Veuillez préciser la date de la vente",
@@ -304,23 +301,28 @@ public class CreatePanelVA extends JPanel {
 					} 
 
 					if (validDate && montant>0) {
-						Vente a = new Vente(date, montant, c);
-						a.description = currentPane;
+						Vente v = new Vente(date, montant, c);
+						int qty =  Integer.parseInt(table.getValueAt(table.getSelectedRow(), 1).toString());
+						DetailVente detailVente = new DetailVente( Filter.getArticle(table.getValueAt(table.getSelectedRow(), 0).toString()), v, qty);
+						v.description = currentPane;
 						creer.setEnabled(true);
 						JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte",
 								JOptionPane.INFORMATION_MESSAGE);
 						for (int i = 0; i < textFields.length; i++)
 							textFields[i].setText("");
-						TransactionFiles.createVente(a.noTransaction, a);
+						v.MiseAJourCompte(montant);
+						TransactionFiles.createVente(v.noTransaction, v);
+						TransactionFiles.createDetailVente(detailVente);
 						enregistrer.setEnabled(false);
-						new itemSelected();
+//						new itemSelected();
 						Filter.setListClientVentes(achatsList, comboBox);
+						
 					}
 				}
 			} // CreerClient
 
 			 if (currentPane == "Achat") {
-		
+					Article item;
 				if (eventSource == creer) {
 					creer.setEnabled(false);
 					if (comboBox.getSelectedItem() == null)
@@ -337,7 +339,6 @@ public class CreatePanelVA extends JPanel {
 						Filter.setListFournisseurAchats(achatsList, comboBox);
 						Pattern.createArticleBox(box);
 						
-						table.setEnabled(true);
 						boxColumn.setCellEditor(new DefaultCellEditor(box));
 
 						table.getModel().addTableModelListener(new TableModelListener() {
@@ -390,7 +391,6 @@ public class CreatePanelVA extends JPanel {
 									}
 
 								} catch (Exception ex) {
-									System.out.println("Probleme " + ex);
 								}
 
 							}
@@ -405,7 +405,6 @@ public class CreatePanelVA extends JPanel {
 					String dateString = textFields[2].getText();
 					boolean validDate = Pattern.isDate(dateString);
 					double montant = Double.parseDouble(textFields[3].getText());
-					System.out.println(montant);
 					Fournisseur f = Filter.getFournisseur(comboBox.getSelectedItem().toString());
 					Date date = null;
 
@@ -416,7 +415,7 @@ public class CreatePanelVA extends JPanel {
 							JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide", JOptionPane.WARNING_MESSAGE);
 						}
 					}
-					else if (montant <= 0 && !dateString.isEmpty())
+					else if ((montant <= 0d || textFields[3].getText() == "0") && !dateString.isEmpty())
 						JOptionPane.showMessageDialog(null, "Choisisez un article!", "Champ invalide", JOptionPane.ERROR_MESSAGE);
 					else if (dateString.isEmpty())
 						JOptionPane.showMessageDialog(null, "Veuillez préciser la date de l'achat", "Champ Obligatoire",
@@ -430,13 +429,17 @@ public class CreatePanelVA extends JPanel {
 
 					if (validDate && montant>0) {
 						Achat a = new Achat(date, montant, f);
+						int qty =  Integer.parseInt(table.getValueAt(table.getSelectedRow(), 1).toString());
+						DetailAchat detailAchat = new DetailAchat( Filter.getArticle(table.getValueAt(table.getSelectedRow(), 0).toString()), a, qty);
 						a.description = currentPane;
 						creer.setEnabled(true);
 						JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte",
 								JOptionPane.INFORMATION_MESSAGE);
+						a.MiseAJourCompte(montant);
 						for (int i = 0; i < textFields.length; i++)
 							textFields[i].setText("");
 						TransactionFiles.createAchat(a.noTransaction, a);
+						TransactionFiles.createDetailAchat(detailAchat);
 						enregistrer.setEnabled(false);
 						Filter.setListFournisseurAchats(achatsList, comboBox);
 

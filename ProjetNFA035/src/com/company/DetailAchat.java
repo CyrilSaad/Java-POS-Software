@@ -1,26 +1,26 @@
 package com.company;
 
-public class DetailAchat {
-	Achat achat;
+import java.io.Serializable;
+
+public class DetailAchat implements Serializable, Comparable<DetailAchat>{
 	Article article;
+	Achat achat;
 	int quantite;
-	double cout;
-	
 		DetailAchat(Article article, Achat achat, int qty) {
-			this.achat = achat;
 			this.article = article;
+			this.achat = achat;
 			this.quantite = qty;
-			cout = achat.montant;
 		}
-	double calculerMontant () {		return quantite * cout;
+	double calculerMontant () {		return quantite * article.coutAchatParUnite;
 	}
-	public int compareTo(Object o) {
+	@Override
+	public int compareTo(DetailAchat da) {
 		int comp = 0;
-		DetailAchat da = (DetailAchat) o;
 		if(this.calculerMontant() > da.calculerMontant()) comp = 1;
 		else if(this.calculerMontant() < da.calculerMontant()) comp = -1;
 		return comp;
 	}
+	@Override
 	public String toString() {
 		return "Achat:\t:" + achat + "\nArticle:\t" + article + "\nQuantité:\t" + quantite;
 	}
