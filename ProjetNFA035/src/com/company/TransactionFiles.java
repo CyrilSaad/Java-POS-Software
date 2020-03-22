@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class TransactionFiles implements Serializable {
@@ -270,4 +271,38 @@ public class TransactionFiles implements Serializable {
 
 	}
 
+	public static void updateVente(int noTransaction, Date newDate) {
+		// TODO Auto-generated method stub
+
+		ventesMap = getVentes();
+		Vente toModify = (Vente) ventesMap.get(noTransaction);
+		
+		toModify.dateTransaction = newDate;
+		try {
+			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\ventes.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(ventesMap);
+			oos.flush();
+			oos.close();
+
+		} catch (Exception e) {	}
+	
+	}
+	public static void updateAchat(int noTransaction, Date newDate) {
+		// TODO Auto-generated method stub
+
+		achatsMap = getAchats();
+		Achat toModify = (Achat) achatsMap.get(noTransaction);
+		
+		toModify.dateTransaction = newDate;
+		try {
+			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\achats.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(achatsMap);
+			oos.flush();
+			oos.close();
+
+		} catch (Exception e) {	}
+	
+	}
 }

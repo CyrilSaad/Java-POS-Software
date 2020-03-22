@@ -166,8 +166,6 @@ public class Files implements Serializable {
 
 	public static void createCategorie(int noCategorie, Categorie c) {
 		// TODO Auto-generated method stub
-		HashMap tempCategorie = new HashMap();
-		tempCategorie.put(noCategorie, c);
 		try {
 			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\categories.txt");
 			ObjectOutputStream oos = new ObjectOutputStream(out);
@@ -188,7 +186,7 @@ public class Files implements Serializable {
 			oos.close();
 
 		} catch (Exception e) {
-			;
+			
 		}
 	}
 
@@ -256,4 +254,54 @@ public class Files implements Serializable {
 
 	}
 
-}
+	public static void updateArticle(int noArticle, int qteStock, double prixVenteParUnite) {
+
+		articleMap = Files.getArticle();
+		Article toModify = (Article) articleMap.get(noArticle);
+		toModify.qteStock = qteStock;
+		toModify.prixVenteParUnite = prixVenteParUnite;
+		try {
+			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\articles.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(articleMap);
+			oos.flush();
+			oos.close();
+
+		} catch (Exception e) {
+		}
+	
+	}
+
+	public static void updateClient(int noClient, String nom, Ville ville) {
+		compteMap = getComptes();
+		Client toModify = compteMap.get(noClient);
+		toModify.nomCompte = nom;
+		toModify.ville = ville;
+		try {
+			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\clients.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(compteMap);
+			oos.flush();
+			oos.close();
+
+		} catch (Exception e) {	}
+	}
+	
+	public static void updateFournisseur(int noClient, String nom, Ville ville) {
+		compteFMap = getComptesF();
+		Fournisseur toModify = compteFMap.get(noClient);
+		toModify.nomCompte = nom;
+		toModify.ville = ville;
+		try {
+			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\fournisseurs.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(compteFMap);
+			oos.flush();
+			oos.close();
+
+		} catch (Exception e) {	}
+	}
+
+	
+	}
+

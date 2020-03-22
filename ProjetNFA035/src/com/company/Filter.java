@@ -116,7 +116,7 @@ public static ArrayList findFournisseurPaiements(Fournisseur f) {
 	
 	}
 	
-	public static void setListCategorie(JList list){
+	public static void setListCategorie(JList<Categorie> list){
 
 		Collection<Categorie> categories = Files.getCategories().values();
 		DefaultListModel<Categorie> listModel = new DefaultListModel<Categorie>();

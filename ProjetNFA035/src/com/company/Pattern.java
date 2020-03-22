@@ -134,21 +134,14 @@ public class Pattern {
 		table.setRowHeight(30);
 		table.getTableHeader().setReorderingAllowed(false);
 		table.setFont(new Font("Serif", Font.BOLD, 25));
-//		table.setEnabled(false);
+		table.setEnabled(false);
 		return table;
 	}
 
 	public static JTable createTableArticle(DefaultTableModel tabmod) {
 		for (int i = 0; i < 20 + TransactionFiles.getTransactionSize(); i++)
 			tabmod.addRow(new Object[] { null, null, null, null });
-		JTable table = new JTable(tabmod) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				if (column == 2 || column == 3)
-					return false;
-				return true;
-			}
-		};
+		JTable table = new JTable(tabmod);
 		table.setPreferredScrollableViewportSize(new Dimension(500, 300));
 		table.setFillsViewportHeight(true);
 		table.setBorder(new EtchedBorder(EtchedBorder.RAISED));

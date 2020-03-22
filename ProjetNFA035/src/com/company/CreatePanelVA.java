@@ -11,6 +11,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.ParseException;
 import java.util.*;
 
@@ -30,6 +32,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -44,6 +48,7 @@ public class CreatePanelVA extends JPanel {
 	JList achatsList = new JList();
 	JTable table = new JTable();
 	TableColumn boxColumn;
+	String changedDate;
 	boolean validQty, validMontant = false;
 
 	CreatePanelVA(String ss, String s, String cbLabel, JFrame f) {
@@ -68,14 +73,20 @@ public class CreatePanelVA extends JPanel {
 		this.setLayout(new BorderLayout());
 
 		DefaultTableModel tabmod = new DefaultTableModel() {
-			
-		    @Override 
-		    public boolean isCellEditable(int row, int column)
-		    {
-		    	 return column == 2 || column == 1 || column == 0 ? true : false;
-		    }
-		
-	};;
+
+			@Override
+			public boolean isCellEditable(int row, int column)
+
+			{
+				if (column == 3) {
+					TableColumn tm = table.getColumnModel().getColumn(3);
+					tm.setCellRenderer(new ColorColumnRenderer(Color.lightGray, Color.darkGray));
+				}
+
+				return column == 2 || column == 1 || column == 0 ? true : false;
+			}
+
+		};
 		tabmod.addColumn("Article");
 		tabmod.addColumn("Quantité");
 		tabmod.addColumn(s + " Unit");
@@ -157,7 +168,6 @@ public class CreatePanelVA extends JPanel {
 		gbc.gridy = 4;
 		childDisplayPanel.add(textFields[3], gbc);
 
-		achatsList = new JList();
 		JScrollPane listScroller = new JScrollPane(achatsList);
 		// listScroller.add
 		listScroller.setPreferredSize(new Dimension(500, 500));
@@ -178,10 +188,71 @@ public class CreatePanelVA extends JPanel {
 		this.add(displayPanel, BorderLayout.CENTER);
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
-		if (currentPane == "Vente")	Pattern.createClientBox(comboBox);
-		 if (currentPane == "Achat")
+		if (currentPane == "Vente") {
+			Pattern.createClientBox(comboBox);
+			Filter.setListClientVentes(achatsList, comboBox);
+		}
+		if (currentPane == "Achat") {
 			Pattern.createFournisseurBox(comboBox);
-	};
+			Filter.setListFournisseurAchats(achatsList, comboBox);
+		}
+		achatsList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent evt) {
+				achatsListValueChanged(evt);
+			}
+
+			private void achatsListValueChanged(ListSelectionEvent evt) {
+				// TODO Auto-generated method stub
+
+				for (int i = 0; i < tabmod.getRowCount(); i++) {
+					tabmod.setValueAt(null, i, 0);
+					tabmod.setValueAt(null, i, 1);
+					tabmod.setValueAt(null, i, 2);
+					tabmod.setValueAt(null, i, 3);
+				}
+//				enregistrer.setEnabled(true);
+				textFields[2].setEditable(true);
+
+				textFields[2].addFocusListener(new FocusListener() {
+					@Override
+					public void focusGained(FocusEvent e) {
+					}
+
+					@Override
+					public void focusLost(FocusEvent arg0) {
+						// TODO Auto-generated method stub
+						changedDate = textFields[2].getText();
+					}
+
+				});
+
+				if (currentPane == "Vente") {
+					if (!achatsList.getValueIsAdjusting() && !achatsList.isSelectionEmpty()) {
+						Vente item = (Vente) achatsList.getSelectedValue();
+						creer.setEnabled(true);
+						enregistrer.setEnabled(true);
+						textFields[0].setText(item.noTransaction + "");
+						textFields[1].setText(item.description);
+						textFields[2].setText("");
+						textFields[3].setText(item.montant + "");
+					}
+					
+				}
+
+				if (currentPane == "Achat") {
+					if (!achatsList.getValueIsAdjusting() && !achatsList.isSelectionEmpty()) {
+						Achat item = (Achat) achatsList.getSelectedValue();
+						creer.setEnabled(true);
+						textFields[0].setText(item.noTransaction + "");
+						textFields[1].setText(item.description);
+						textFields[2].setText("");
+						textFields[3].setText(item.montant + "");
+					}
+				}
+
+			}
+		});
+	}
 
 	private class panelInitVA implements ActionListener {
 		private JComboBox box = new JComboBox();
@@ -192,11 +263,11 @@ public class CreatePanelVA extends JPanel {
 			if (eventSource == quitter) {
 				frame.dispose();
 			}
-			
+
 			if (currentPane == "Vente") {
-				
+
 				if (eventSource == creer) {
-				
+
 					if (comboBox.getSelectedItem() == null)
 						JOptionPane.showMessageDialog(null, "Pas de client choisi", "Champ Manquant",
 								JOptionPane.WARNING_MESSAGE);
@@ -227,14 +298,15 @@ public class CreatePanelVA extends JPanel {
 									if (e.getColumn() == 0) {
 										if (item == null) {
 											for (int i = 0; i < table.getColumnCount(); i++)
-												table.setValueAt(null, e.getLastRow(), i++); // In case of clicking on empty
+												table.setValueAt(null, e.getLastRow(), i++); // In case of clicking on
+																								// empty
 																								// cell,
 																								// handles null pointer
 																								// exception
 										}
 										if (item != null) {
-											table.setValueAt(item.qteStock, e.getLastRow(), 1);	
-											table.setValueAt(item.prixVenteParUnite, e.getLastRow(), 2);										
+											table.setValueAt(item.qteStock, e.getLastRow(), 1);
+											table.setValueAt(item.prixVenteParUnite, e.getLastRow(), 2);
 											qty = Integer.parseInt(table.getValueAt(e.getLastRow(), 1).toString());
 											price = Double.parseDouble(table.getValueAt(e.getLastRow(), 2).toString());
 											table.setValueAt((qty * price), e.getLastRow(), 3);
@@ -247,16 +319,28 @@ public class CreatePanelVA extends JPanel {
 										validMontant = Pattern.isDouble(montantText);
 										String quantityText = table.getValueAt(e.getLastRow(), 1).toString();
 										validQty = Pattern.isNumeric(quantityText);
+										boolean qtySufficient = false;
 
-										if (!validMontant | !validQty) {
+										if (validQty) {
+											int qtyStock = Integer.parseInt(quantityText);
+											if (qtyStock <= item.qteStock)
+												qtySufficient = true;
+										}
+
+										if (!qtySufficient) {
+											JOptionPane.showMessageDialog(null, "\r\n" + "Il n'y a pas assez de stock",
+													"Stock Insuffisant", JOptionPane.WARNING_MESSAGE);
+											table.setValueAt(0, e.getLastRow(), 1);
+										}
+										System.out.println(qtySufficient);
+										if (!(validMontant || validQty) && qtySufficient) {
 											JOptionPane.showMessageDialog(null, "Numéro non valide!", "Erreur",
 													JOptionPane.ERROR_MESSAGE);
 											table.setValueAt(0, e.getLastRow(), 2);
 											table.setValueAt(0, e.getLastRow(), 1);
 											table.setValueAt(0, e.getLastRow(), 3);
 										}
-
-										if (validMontant && validQty) {
+										if (validMontant && validQty && qtySufficient) {
 											price = Double.parseDouble(montantText);
 											qty = Integer.parseInt(quantityText);
 											table.setValueAt((qty * price), e.getLastRow(), 3);
@@ -280,7 +364,7 @@ public class CreatePanelVA extends JPanel {
 					Client c = Filter.getClient(comboBox.getSelectedItem().toString());
 					double montant = Double.parseDouble(textFields[3].getText());
 					Date date = null;
-
+					boolean montantValide = textFields[3].getText().equals("0");
 					if (validDate && !dateString.isEmpty()) {
 						try {
 							date = Pattern.format.parse(dateString);
@@ -289,8 +373,9 @@ public class CreatePanelVA extends JPanel {
 									"Date invalide", JOptionPane.WARNING_MESSAGE);
 						}
 					}
-					else if ( (montant <= 0d || textFields[3].getText() == "0") && !dateString.isEmpty() )
-						JOptionPane.showMessageDialog(null, "Choisisez un article!", "Champ invalide",	JOptionPane.ERROR_MESSAGE);
+					if (montantValide && !dateString.isEmpty())
+						JOptionPane.showMessageDialog(null, "Choisisez un article!", "Champ invalide",
+								JOptionPane.ERROR_MESSAGE);
 					else if (dateString.isEmpty())
 						JOptionPane.showMessageDialog(null, "Veuillez préciser la date de la vente",
 								"Champ Obligatoire", JOptionPane.WARNING_MESSAGE);
@@ -298,31 +383,53 @@ public class CreatePanelVA extends JPanel {
 					else if (!validDate && !dateString.isEmpty()) {
 						JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",
 								JOptionPane.ERROR_MESSAGE);
-					} 
+					}
 
-					if (validDate && montant>0) {
+					if (validDate && montant > 0 && achatsList.isSelectionEmpty()) {
 						Vente v = new Vente(date, montant, c);
-						int qty =  Integer.parseInt(table.getValueAt(table.getSelectedRow(), 1).toString());
-						DetailVente detailVente = new DetailVente( Filter.getArticle(table.getValueAt(table.getSelectedRow(), 0).toString()), v, qty);
+						int qty = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 1).toString());
+						Article article = Filter.getArticle(table.getValueAt(table.getSelectedRow(), 0).toString());
+						DetailVente detailVente = new DetailVente(article, v, qty);
+						article.prixVenteParUnite = montant / qty;
 						v.description = currentPane;
-						creer.setEnabled(true);
-						JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte",
-								JOptionPane.INFORMATION_MESSAGE);
 						for (int i = 0; i < textFields.length; i++)
 							textFields[i].setText("");
+
+						JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte",
+								JOptionPane.INFORMATION_MESSAGE);
 						v.MiseAJourCompte(montant);
+						article.sortieStock(qty, montant);
 						TransactionFiles.createVente(v.noTransaction, v);
 						TransactionFiles.createDetailVente(detailVente);
 						enregistrer.setEnabled(false);
-//						new itemSelected();
-						Filter.setListClientVentes(achatsList, comboBox);
-						
+						creer.setEnabled(true);
 					}
+
+					if (!achatsList.isSelectionEmpty()) {
+						Date newDate = null;
+						boolean validNewDate = Pattern.isDate(changedDate);
+						if (validNewDate) {
+							try {
+								newDate = Pattern.format.parse(changedDate);
+							} catch (ParseException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						} // end date formatting
+						Vente venteSelected = (Vente) achatsList.getSelectedValue();
+						TransactionFiles.updateVente(venteSelected.noTransaction, newDate);
+						creer.setEnabled(true);
+						enregistrer.setEnabled(false);
+						JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
+					}
+
+					Filter.setListClientVentes(achatsList, comboBox);
+
 				}
 			} // CreerClient
 
-			 if (currentPane == "Achat") {
-					Article item;
+			if (currentPane == "Achat") {
+				Article item;
 				if (eventSource == creer) {
 					creer.setEnabled(false);
 					if (comboBox.getSelectedItem() == null)
@@ -338,7 +445,7 @@ public class CreatePanelVA extends JPanel {
 						Pattern.createFournisseurBox(comboBox);
 						Filter.setListFournisseurAchats(achatsList, comboBox);
 						Pattern.createArticleBox(box);
-						
+						table.setEnabled(true);
 						boxColumn.setCellEditor(new DefaultCellEditor(box));
 
 						table.getModel().addTableModelListener(new TableModelListener() {
@@ -352,7 +459,8 @@ public class CreatePanelVA extends JPanel {
 									if (e.getColumn() == 0) {
 										if (item == null) {
 											for (int i = 0; i < table.getColumnCount(); i++)
-												table.setValueAt(null, e.getLastRow(), i++); // In case of clicking on empty
+												table.setValueAt(null, e.getLastRow(), i++); // In case of clicking on
+																								// empty
 																								// cell,
 																								// handles null pointer
 																								// exception
@@ -400,8 +508,7 @@ public class CreatePanelVA extends JPanel {
 				} // Creer button
 
 				if (eventSource == enregistrer) {
-					
-		
+
 					String dateString = textFields[2].getText();
 					boolean validDate = Pattern.isDate(dateString);
 					double montant = Double.parseDouble(textFields[3].getText());
@@ -412,11 +519,11 @@ public class CreatePanelVA extends JPanel {
 						try {
 							date = Pattern.format.parse(dateString);
 						} catch (ParseException e1) {
-							JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide", JOptionPane.WARNING_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide",
+									"Date invalide", JOptionPane.WARNING_MESSAGE);
 						}
 					}
-					else if ((montant <= 0d || textFields[3].getText() == "0") && !dateString.isEmpty())
-						JOptionPane.showMessageDialog(null, "Choisisez un article!", "Champ invalide", JOptionPane.ERROR_MESSAGE);
+
 					else if (dateString.isEmpty())
 						JOptionPane.showMessageDialog(null, "Veuillez préciser la date de l'achat", "Champ Obligatoire",
 								JOptionPane.WARNING_MESSAGE);
@@ -424,13 +531,17 @@ public class CreatePanelVA extends JPanel {
 					else if (!validDate && !dateString.isEmpty()) {
 						JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",
 								JOptionPane.ERROR_MESSAGE);
-					} 
-				
+					}
 
-					if (validDate && montant>0) {
+					if ((montant <= 0d || textFields[3].getText() == "0") && !dateString.isEmpty())
+						JOptionPane.showMessageDialog(null, "Choisisez un article!", "Champ invalide",
+								JOptionPane.ERROR_MESSAGE);
+					if (validDate && montant > 0 && achatsList.isSelectionEmpty()) {
 						Achat a = new Achat(date, montant, f);
-						int qty =  Integer.parseInt(table.getValueAt(table.getSelectedRow(), 1).toString());
-						DetailAchat detailAchat = new DetailAchat( Filter.getArticle(table.getValueAt(table.getSelectedRow(), 0).toString()), a, qty);
+						Article article = Filter.getArticle(table.getValueAt(table.getSelectedRow(), 0).toString());
+						int qty = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 1).toString());
+						article.coutAchatParUnite = montant / qty;
+						DetailAchat detailAchat = new DetailAchat(article, a, qty);
 						a.description = currentPane;
 						creer.setEnabled(true);
 						JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte",
@@ -438,13 +549,34 @@ public class CreatePanelVA extends JPanel {
 						a.MiseAJourCompte(montant);
 						for (int i = 0; i < textFields.length; i++)
 							textFields[i].setText("");
+						article.entreeStock(qty, montant);
 						TransactionFiles.createAchat(a.noTransaction, a);
 						TransactionFiles.createDetailAchat(detailAchat);
 						enregistrer.setEnabled(false);
-						Filter.setListFournisseurAchats(achatsList, comboBox);
 
 					}
-				}
+					
+					if (!achatsList.isSelectionEmpty()) {
+						Date newDate = null;
+						boolean validNewDate = Pattern.isDate(changedDate);
+						if (validNewDate) {
+							try {
+								newDate = Pattern.format.parse(changedDate);
+							} catch (ParseException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						} // end date formatting
+						Achat achatSelected = (Achat) achatsList.getSelectedValue();
+						TransactionFiles.updateAchat(achatSelected.noTransaction, newDate);
+						creer.setEnabled(true);
+						enregistrer.setEnabled(false);
+						JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
+					}
+
+			
+					Filter.setListFournisseurAchats(achatsList, comboBox);
+				} //fin Enregister
 
 			}
 		}

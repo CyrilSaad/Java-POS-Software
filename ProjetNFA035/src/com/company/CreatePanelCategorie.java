@@ -14,16 +14,16 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class CreatePanelCategorie extends JPanel {
 	JFrame frame;
 	JTextField textFields[];
 	JButton creer, enregistrer, quitter;
 	ButtonGroup bg;
-	JList articleList;
+	JList articleList = new JList();
 	JTable table = new JTable();
-	boolean validQty, validMontant = false;
-	boolean validPrice, validCout;
+	JComboBox combobox = new JComboBox();
 	CreatePanelCategorie(String ss, JFrame frame) {
 		this.frame = frame;
 		JPanel parentPanel, buttonPanel;
@@ -31,9 +31,11 @@ public class CreatePanelCategorie extends JPanel {
 
 		parentPanel = new JPanel();
 		parentPanel.setLayout(new BorderLayout());
+		 Pattern.createCategorieBox(combobox);
 
-		DefaultComboBoxModel cbmod = new DefaultComboBoxModel();
-		JComboBox combobox = new JComboBox(cbmod);
+		
+		
+		
 		combobox.setEditable(false);
 		combobox.setPreferredSize(new Dimension(200, 25));
 		creer = new JButton("Créer");
@@ -47,13 +49,20 @@ public class CreatePanelCategorie extends JPanel {
 		this.setLayout(new BorderLayout());
 
 		DefaultTableModel tabmod = new DefaultTableModel() {
-			
-			    @Override 
-			    public boolean isCellEditable(int row, int column)
-			    {
-			    	 return column == 2 || column==4 ? true : false;
-			    }
-			
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+		
+				if(column == 2 || column == 4) {
+							TableColumn tm = table.getColumnModel().getColumn(2);
+			      tm.setCellRenderer(new ColorColumnRenderer(Color.lightGray, Color.blue));
+			       tm = table.getColumnModel().getColumn(4);
+			      tm.setCellRenderer(new ColorColumnRenderer(Color.lightGray, Color.blue));
+				}
+				
+				return column == 2 || column == 4 ? true : false;
+			}
+
 		};
 		for (int i = 0; i < 20; i++)
 			tabmod.addRow(new Object[] { null, null, null, null });
@@ -65,64 +74,34 @@ public class CreatePanelCategorie extends JPanel {
 		tabmod.addColumn("Profit");
 
 		table = Pattern.createTable(tabmod);
-		
+		table.setBackground(Color.LIGHT_GRAY);
+//		Article item = Filter.getArticle(combobox.getSelectedItem().toString());
+//		System.out.println(item);
 		table.getModel().addTableModelListener(new TableModelListener() {
 			@Override
 			public void tableChanged(TableModelEvent e) {
 				try {
-					Article item = Filter.getArticle(combobox.getSelectedItem().toString());
 					int qty = 0;
 					double price = 0;
+					
+//						boolean = false;
+					boolean validCout, validQty;
 
-					if (e.getColumn() == 0) {
-						if (item == null) {
-							for (int i = 0; i < table.getColumnCount(); i++)
-								table.setValueAt(null, e.getLastRow(), i++); 
-						}
-						if (item != null) {
-							
-							table.setValueAt(item.noArticle, e.getLastRow(), 0);
-							table.setValueAt(item.nomArticle, e.getLastRow(), 1);
-							table.setValueAt(item.qteStock, e.getLastRow(), 2);
-							table.setValueAt(item.prixVenteParUnite, e.getLastRow(), 3);
-							table.setValueAt(item.coutAchatParUnite, e.getLastRow(), 4);
-							table.setValueAt(item.tauxProfit*100 +"%", e.getLastRow(), 5);
-							qty = Integer.parseInt(table.getValueAt(e.getLastRow(), 2).toString());
-							price = Double.parseDouble(table.getValueAt(e.getLastRow(), 3).toString());
-						}
-
-					} // edit row on Article change
-
-					if (e.getColumn() == 2 || e.getColumn() == 4) {
-						String montantText = table.getValueAt(e.getLastRow(), 4).toString();
-						validMontant = Pattern.isDouble(montantText);
-						String quantityText = table.getValueAt(e.getLastRow(), 2).toString();
-						validQty = Pattern.isNumeric(quantityText);
-
-						if (!validMontant | !validQty) {
-							JOptionPane.showMessageDialog(null, "Numéro non valide!", "Erreur",
-									JOptionPane.ERROR_MESSAGE);
-							table.setValueAt(0, e.getLastRow(), 1);
-							table.setValueAt(0, e.getLastRow(), 2);
-							table.setValueAt(0, e.getLastRow(), 3);
-						}
-
-						if (validMontant && validQty) {
-							price = Double.parseDouble(montantText);
-							qty = Integer.parseInt(quantityText);
-							double sellingPrice = price + price*item.tauxProfit;
-							table.setValueAt(sellingPrice, e.getLastRow(), 3);
-//							textFields[3].setText(qty * price + "");
-						}
-
+					String coutText = table.getValueAt(e.getLastRow(), 4).toString();
+					validCout = Pattern.isDouble(coutText);
+					String quantityText = table.getValueAt(e.getLastRow(), 2).toString();
+					validQty = Pattern.isNumeric(quantityText);
+					if (!validCout || !validQty) {
+						JOptionPane.showMessageDialog(null, "Numéro non valide!", "Erreur", JOptionPane.ERROR_MESSAGE);
+						table.setValueAt(0, e.getLastRow(), 1);
+						table.setValueAt(0, e.getLastRow(), 2);
+						table.setValueAt(0, e.getLastRow(), 3);
 					}
-
-				} catch (Exception ex) {
-				}
+				} catch (Exception ex) {}
 
 			}
 		});
-		
+
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();
@@ -167,7 +146,8 @@ public class CreatePanelCategorie extends JPanel {
 		childDisplayPanel.add(textFields[0], gbc);
 
 		JLabel description = new JLabel("Nom Catégorie: ");
-		gbc.gridy = 1; gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.gridx = 0;
 		childDisplayPanel.add(description, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 1;
@@ -183,9 +163,9 @@ public class CreatePanelCategorie extends JPanel {
 		gbc.gridy = 4;
 		childDisplayPanel.add(montantVente, gbc);
 
-		DefaultListModel listModel = new DefaultListModel();
-		// forLoop arrayList into ListModel .setModel()
-		articleList = new JList(listModel);
+
+		Filter.setListCategorie(articleList);
+
 		articleList.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent evt) {
@@ -214,6 +194,7 @@ public class CreatePanelCategorie extends JPanel {
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
 
+		
 	}
 
 	private class initPanelCategorie implements ActionListener {
@@ -227,7 +208,6 @@ public class CreatePanelCategorie extends JPanel {
 				textFields[0].setText("" + (Categorie.noSerie + 1));
 				textFields[1].setEditable(true);
 				enregistrer.setEnabled(true);
-				Filter.setListCategorie(articleList);
 
 			} // Creer button
 
@@ -257,13 +237,11 @@ public class CreatePanelCategorie extends JPanel {
 						enregistrer.setEnabled(false);
 						creer.setEnabled(true);
 					}
-				} 
-				else {
-					
-				}
-			} // end enregis
+				} else {
 
-			Filter.setListCategorie(articleList);
+				}
+				Filter.setListCategorie(articleList);
+			} // end enregis
 		}
 	}
 
@@ -278,7 +256,7 @@ public class CreatePanelCategorie extends JPanel {
 			tabmod.setValueAt(null, i, 4);
 			tabmod.setValueAt(null, i, 5);
 		}
-		if (!articleList.getValueIsAdjusting()) {
+		if (!articleList.getValueIsAdjusting() && !articleList.isSelectionEmpty()) {
 			Categorie c = (Categorie) articleList.getSelectedValue();
 			ArrayList<Article> articles = Filter.getCategorieArticles(c);
 
@@ -289,7 +267,7 @@ public class CreatePanelCategorie extends JPanel {
 				tabmod.setValueAt(item.qteStock, i, 2);
 				tabmod.setValueAt(item.prixVenteParUnite, i, 3);
 				tabmod.setValueAt(item.coutAchatParUnite, i, 4);
-				tabmod.setValueAt(item.tauxProfit * 100 + "%", i, 5);
+				tabmod.setValueAt( (int) (item.tauxProfit * 100 )+ "%", i, 5);
 
 			}
 		}

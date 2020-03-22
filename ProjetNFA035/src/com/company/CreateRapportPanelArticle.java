@@ -171,7 +171,7 @@ public class CreateRapportPanelArticle extends JPanel {
 				dateFinString = tf2.getText();
 				boolean validDateDebut = Pattern.isDate(dateDebutString);
 				boolean validDateFin = Pattern.isDate(dateFinString);
-				boolean categorySelected = (categorieBox.getSelectedItem() != null);
+				boolean categorySelected = categorieBox.getSelectedIndex() == -1;
 				Date debut = null, fin = null;
 
 				if ((validDateDebut && !dateDebutString.isEmpty()) || (validDateFin && !dateFinString.isEmpty())) {
@@ -192,12 +192,14 @@ public class CreateRapportPanelArticle extends JPanel {
 						|| (!validDateFin && !dateFinString.isEmpty())) {
 					JOptionPane.showMessageDialog(null, "Le format de la date n'est pas valide", "Date invalide",
 							JOptionPane.ERROR_MESSAGE);
-				} else if (!categorySelected)
+				} 
+				 if (categorySelected)
 					JOptionPane.showMessageDialog(null, "Choisissez une article!", "Champ Obligatoire",
 							JOptionPane.WARNING_MESSAGE);
 				// sort by date for Ventes // end case Client
+				System.out.println(categorySelected);
 
-				if (validDateDebut && validDateFin && debut != null && fin != null && categorySelected) {
+				if (validDateDebut && validDateFin && debut != null && fin != null && !categorySelected) {
 
 					Article a = Filter.getArticle(comboBox.getSelectedItem().toString());
 					ArrayList<DetailVente> ventes = Filter.getArticleDetailVentes(a);

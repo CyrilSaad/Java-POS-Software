@@ -32,6 +32,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class CreatePanelArticle extends JPanel {
 	JFrame frame;
@@ -71,7 +72,8 @@ public class CreatePanelArticle extends JPanel {
 		tabmod.addColumn("Total");
 		for(int i=0; i<20; i++) tabmod.addRow(new Object[] {null,null,null,null});
 		
-		 table = Pattern.createTableArticle(tabmod);
+		 table = Pattern.createTable(tabmod);
+		 table.setEnabled(false);
 		JScrollPane scrollPane = new JScrollPane(table);
 
 		buttonPanel = new JPanel();
@@ -186,7 +188,7 @@ public class CreatePanelArticle extends JPanel {
 		this.add(displayPanel, BorderLayout.CENTER);
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
-
+		table.setBackground(Color.LIGHT_GRAY);
 	
 	}
 	private class initPanelArticle implements ActionListener {
@@ -207,8 +209,7 @@ public class CreatePanelArticle extends JPanel {
 					enregistrer.setEnabled(true);
 					Pattern.createCategorieBox(combobox);
 					Filter.setListCategories(transactionList, combobox);
-					
-					table.setEnabled(true);
+
 
 					table.getModel().addTableModelListener(new TableModelListener() {
 						@Override
@@ -238,8 +239,8 @@ public class CreatePanelArticle extends JPanel {
 								} // edit row on Article change
 
 								if (e.getColumn() == 3 || e.getColumn() == 4 || e.getColumn() == 5) {
-									String montantText = table.getValueAt(e.getLastRow(), 4).toString();
-									validMontant = Pattern.isDouble(montantText);
+									String coutText = table.getValueAt(e.getLastRow(), 4).toString();
+									validMontant = Pattern.isDouble(coutText);
 									String quantityText = table.getValueAt(e.getLastRow(), 3).toString();
 									validQty = Pattern.isNumeric(quantityText);
 
@@ -252,7 +253,7 @@ public class CreatePanelArticle extends JPanel {
 									}
 
 									if (validMontant && validQty) {
-										price = Double.parseDouble(montantText);
+										price = Double.parseDouble(coutText);
 										qty = Integer.parseInt(quantityText);
 										table.setValueAt((qty * price), e.getLastRow(), 5);
 										textFields[3].setText(qty * price + "");
@@ -314,6 +315,7 @@ public class CreatePanelArticle extends JPanel {
 
 	private void transactionListValueChanged(ListSelectionEvent evt) {
 		for (int i = 0; i < tabmod.getRowCount(); i++) {
+			
 			tabmod.setValueAt(null, i, 0);
 			tabmod.setValueAt(null, i, 1);
 			tabmod.setValueAt(null, i, 2);
@@ -322,7 +324,7 @@ public class CreatePanelArticle extends JPanel {
 			tabmod.setValueAt(null, i, 5);
 		}
 
-			if (!transactionList.getValueIsAdjusting()) {
+			if (!transactionList.getValueIsAdjusting() && !transactionList.isSelectionEmpty()) {
 				Article a = (Article) transactionList.getSelectedValue();
 				ArrayList<DetailVente> ventes = Filter.getArticleDetailVentes(a);
 				ArrayList<DetailAchat> achats = Filter.getArticleDetailAchats(a);

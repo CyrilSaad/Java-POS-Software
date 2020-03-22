@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -33,6 +35,7 @@ public class CreatePanelCompte extends JPanel {
 	ButtonGroup bg;
 	JList transactionList;
 	DefaultTableModel tabmod;
+	String changedName;
 
 	CreatePanelCompte(String ss, JFrame f) {
 		this.currentPane = ss;
@@ -186,7 +189,7 @@ public class CreatePanelCompte extends JPanel {
 		this.add(displayPanel, BorderLayout.CENTER);
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
-
+		table.setBackground(Color.LIGHT_GRAY);
 	}
 
 	private class panelInitCompte implements ActionListener {
@@ -213,6 +216,7 @@ public class CreatePanelCompte extends JPanel {
 				}
 
 				if (eventSource == enregistrer) {
+				
 					String name = textFields[1].getText();
 					String nomVille = villes.getSelectedItem().toString();
 					Ville selectedVille = Ville.findVille(nomVille);
@@ -238,15 +242,26 @@ public class CreatePanelCompte extends JPanel {
 							c.setEtat(EtatCompte.FERME);
 							break;
 						}
-						creer.setEnabled(true);
-						JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte",
-								JOptionPane.INFORMATION_MESSAGE);
 						for (int i = 0; i < textFields.length; i++)
 							textFields[i].setText("");
 						actif.setSelected(true);
-						Files.createClient(c.noCompte, c);
-						enregistrer.setEnabled(false);
+						creer.setEnabled(true);
+						if(transactionList.isSelectionEmpty()) {
+							JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte", JOptionPane.INFORMATION_MESSAGE);							
+							Files.createClient(c.noCompte, c);
+						}
+						if(!transactionList.isSelectionEmpty()) {
+							JOptionPane.showMessageDialog(null, "Compte modifié avec succès", "Enregistrement du compte", JOptionPane.INFORMATION_MESSAGE);
+							Client clientSelected = (Client) transactionList.getSelectedValue();
+							int num = clientSelected.noCompte;
+							
+							String newVill = villes.getSelectedItem().toString();
+							Ville newVilleSelected = Ville.findVille(newVill);
+							System.out.println(changedName);
+							Files.updateClient(num, changedName, newVilleSelected);
+						}
 						Filter.setListClient(transactionList);
+						enregistrer.setEnabled(false);
 
 					}
 				}
@@ -294,13 +309,27 @@ public class CreatePanelCompte extends JPanel {
 							break;
 						}
 						creer.setEnabled(true);
-						JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte",
-								JOptionPane.INFORMATION_MESSAGE);
 						for (int i = 0; i < textFields.length; i++)
 							textFields[i].setText("");
+					
+						
+						if(transactionList.isSelectionEmpty()) {
+							JOptionPane.showMessageDialog(null, "Compte enregistré avec succès", "Enregistrement du compte", JOptionPane.INFORMATION_MESSAGE);							
+							Files.createFournisseur(f.noCompte, f);
+						}
+						if(!transactionList.isSelectionEmpty()) {
+							JOptionPane.showMessageDialog(null, "Compte modifié avec succès", "Enregistrement du compte", JOptionPane.INFORMATION_MESSAGE);
+							Fournisseur fournisseurSelected = (Fournisseur) transactionList.getSelectedValue();
+							int num = fournisseurSelected.noCompte;
+							String newVill = villes.getSelectedItem().toString();
+							Ville newVilleSelected = Ville.findVille(newVill);
+							Files.updateFournisseur(num, changedName, newVilleSelected);
+						}
+						
+						
 						actif.setSelected(true);
-						Files.createFournisseur(f.noCompte, f);
 						enregistrer.setEnabled(false);
+						creer.setEnabled(true);
 						Filter.setListFournisseur(transactionList);
 					}
 				}
@@ -310,41 +339,5 @@ public class CreatePanelCompte extends JPanel {
 
 	}
 
-	private void transactionListValueChanged(ListSelectionEvent evt) {
-		for (int i = 0; i < tabmod.getRowCount(); i++) {
-			tabmod.setValueAt(null, i, 0);
-			tabmod.setValueAt(null, i, 1);
-			tabmod.setValueAt(null, i, 2);
-			tabmod.setValueAt(null, i, 3);
-		}
-		if (currentPane == "Client") {
-			if (!transactionList.getValueIsAdjusting()) {
-				Client c = (Client) transactionList.getSelectedValue();
-				ArrayList<Transaction> trs = Filter.getClientTransactions(c);
-
-				for (int i = 0; i < trs.size(); i++) {
-					Transaction item = trs.get(i);
-					tabmod.setValueAt(item.noTransaction, i, 0);
-					tabmod.setValueAt(item.description, i, 1);
-					tabmod.setValueAt(Pattern.format.format(item.dateTransaction), i, 2);
-					tabmod.setValueAt(item.montant, i, 3);
-				}
-			}
-		}
-		
-		if (currentPane == "Fournisseur") {
-			if (!transactionList.getValueIsAdjusting()) {
-				Fournisseur f = (Fournisseur) transactionList.getSelectedValue();
-				ArrayList<Transaction> trs = Filter.getFournisseurTransactions(f);
-
-				for (int i = 0; i < trs.size(); i++) {
-					Transaction item = trs.get(i);
-					tabmod.setValueAt(item.noTransaction, i, 0);
-					tabmod.setValueAt(item.description, i, 1);
-					tabmod.setValueAt(Pattern.format.format(item.dateTransaction), i, 2);
-					tabmod.setValueAt(item.montant, i, 3);
-				}
-			}
-		}
-	}
+	private void transactionListValueChanged(ListSelectionEvent evt) {}
 }
