@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.company.Transaction.TypePaie;
+
 public class TransactionFiles implements Serializable {
 	static HashMap achatsMap = new HashMap();
 	static HashMap ventesMap = new HashMap();
@@ -304,5 +306,62 @@ public class TransactionFiles implements Serializable {
 
 		} catch (Exception e) {	}
 	
+	}
+
+	public static void updateRecu(int noTransaction, Date newDate, String s) {
+		// TODO Auto-generated method stub
+
+		recusMap = getRecus();
+		Recu toModify = (Recu) recusMap.get(noTransaction);
+		
+		toModify.dateTransaction = newDate;
+		switch (s) {
+		case "CASH":
+			toModify.setTypePaie(TypePaie.CASH);
+			break;
+		case "CHEQUE":
+			toModify.setTypePaie(TypePaie.CHEQUE);
+			break;
+		case "TRANSFERT":
+			toModify.setTypePaie(TypePaie.TRANSFERT);
+			break;
+		}
+		try {
+			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\recus.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(recusMap);
+			oos.flush();
+			oos.close();
+
+		} catch (Exception e) {	}
+	}
+		public static void updatePaiement(int noTransaction, Date newDate, String s) {
+			// TODO Auto-generated method stub	
+			paiementsMap = getPaiements();
+			Paiement toModify = (Paiement) recusMap.get(noTransaction);
+			
+			toModify.dateTransaction = newDate;
+			
+			switch (s) {
+			case "CASH":
+				toModify.setTypePaie(TypePaie.CASH);
+				break;
+			case "CHEQUE":
+				toModify.setTypePaie(TypePaie.CHEQUE);
+				break;
+			case "TRANSFERT":
+				toModify.setTypePaie(TypePaie.TRANSFERT);
+				break;
+			}
+			try {
+				FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\paiements.txt");
+				ObjectOutputStream oos = new ObjectOutputStream(out);
+				oos.writeObject(paiementsMap);
+				oos.flush();
+				oos.close();
+				
+			} catch (Exception e) {	}
+	
+		
 	}
 }

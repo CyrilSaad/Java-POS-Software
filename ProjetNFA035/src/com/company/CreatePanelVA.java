@@ -408,19 +408,19 @@ public class CreatePanelVA extends JPanel {
 					if (!achatsList.isSelectionEmpty()) {
 						Date newDate = null;
 						boolean validNewDate = Pattern.isDate(changedDate);
-						if (validNewDate) {
+						if (validNewDate && !(changedDate == null)) {
 							try {
 								newDate = Pattern.format.parse(changedDate);
 							} catch (ParseException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
+							Vente venteSelected = (Vente) achatsList.getSelectedValue();
+							JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
+							TransactionFiles.updateVente(venteSelected.noTransaction, newDate);
 						} // end date formatting
-						Vente venteSelected = (Vente) achatsList.getSelectedValue();
-						TransactionFiles.updateVente(venteSelected.noTransaction, newDate);
 						creer.setEnabled(true);
 						enregistrer.setEnabled(false);
-						JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
 					}
 
 					Filter.setListClientVentes(achatsList, comboBox);
@@ -559,19 +559,19 @@ public class CreatePanelVA extends JPanel {
 					if (!achatsList.isSelectionEmpty()) {
 						Date newDate = null;
 						boolean validNewDate = Pattern.isDate(changedDate);
-						if (validNewDate) {
+						if (validNewDate && !(changedDate == null)) {
 							try {
 								newDate = Pattern.format.parse(changedDate);
 							} catch (ParseException e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
 							}
+							Achat achatSelected = (Achat) achatsList.getSelectedValue();
+							TransactionFiles.updateAchat(achatSelected.noTransaction, newDate);
+							JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
 						} // end date formatting
-						Achat achatSelected = (Achat) achatsList.getSelectedValue();
-						TransactionFiles.updateAchat(achatSelected.noTransaction, newDate);
 						creer.setEnabled(true);
 						enregistrer.setEnabled(false);
-						JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
 					}
 
 			

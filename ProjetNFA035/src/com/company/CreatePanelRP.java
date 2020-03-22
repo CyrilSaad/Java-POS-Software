@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -29,6 +31,9 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import com.company.Transaction.TypePaie;
 
 public class CreatePanelRP extends JPanel {
@@ -39,6 +44,7 @@ public class CreatePanelRP extends JPanel {
 	String currentPane;
 	JRadioButton cash, cheque, transfert;
 	JComboBox comboBox;
+	 String changedDate;
 	JList RPList ;
 	CreatePanelRP(String ss, String tag, JFrame f) {
 
@@ -187,10 +193,57 @@ public class CreatePanelRP extends JPanel {
 		this.add(displayPanel, BorderLayout.CENTER);
 		this.add(parentPanel, BorderLayout.NORTH);
 		// end of first panel
-		if (currentPane == "Reçu")
+		if (currentPane == "Reçu") {
 			Pattern.createClientBox(comboBox);
-		else
+			Filter.setListClientRecus(RPList, comboBox);
+		}
+			
+		else {			
 			Pattern.createFournisseurBox(comboBox);
+			Filter.setListFournisseurPaiements(RPList, comboBox);
+		}
+		RPList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent evt) {
+				achatsListValueChanged(evt);
+			}
+
+			private void achatsListValueChanged(ListSelectionEvent evt) {
+				// TODO Auto-generated method stub
+
+				if (currentPane == "Reçu") {
+				
+					textFields[2].setEditable(true);
+				textFields[2].addFocusListener(new FocusListener() {
+			
+
+					@Override
+					public void focusGained(FocusEvent e) {
+					}
+
+					@Override
+					public void focusLost(FocusEvent arg0) {
+						// TODO Auto-generated method stub
+						changedDate = textFields[2].getText();
+					}
+
+				});
+
+					if (!RPList.getValueIsAdjusting() && !RPList.isSelectionEmpty()) {
+						Recu item = (Recu) RPList.getSelectedValue();
+						creer.setEnabled(true);
+						enregistrer.setEnabled(true);
+						textFields[0].setText(item.noTransaction + "");
+						textFields[1].setText(item.description);
+						textFields[2].setText("");
+						textFields[3].setText(item.montant + "");
+					}
+					
+				}
+
+	
+
+			}
+		});
 
 	};
 
@@ -257,7 +310,7 @@ public class CreatePanelRP extends JPanel {
 					else if (!validDate) JOptionPane.showMessageDialog(null, "Le format de la date donnée est incorrect!", "Erreur",
 								JOptionPane.ERROR_MESSAGE);
 				
-					if(validMontant && date != null) {
+					if(validMontant && date != null && RPList.isSelectionEmpty()) {
 						Client c =  Filter.getClient(comboBox.getSelectedItem().toString());
 						enregistrer.setEnabled(true);
 						Recu r = new Recu(date, montant, c);
@@ -283,8 +336,29 @@ public class CreatePanelRP extends JPanel {
 						TransactionFiles.createRecu(r.noTransaction, r);
 						enregistrer.setEnabled(false);
 						creer.setEnabled(true);
-						Filter.setListClientRecus(RPList, comboBox);
 					}
+					if(!RPList.isSelectionEmpty()) {
+
+						Date newDate = null;
+						boolean validNewDate = Pattern.isDate(changedDate);
+						if (validNewDate && !(changedDate == null)) {
+							try {
+								newDate = Pattern.format.parse(changedDate);
+							} catch (ParseException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							Recu recuSelected = (Recu) RPList.getSelectedValue();
+							TransactionFiles.updateRecu(recuSelected.noTransaction, newDate, bg.getSelection().getActionCommand().toString());
+							JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
+						} // end date formatting
+						creer.setEnabled(true);
+						enregistrer.setEnabled(false);
+					
+					
+					}
+					cash.setSelected(true);
+					Filter.setListClientRecus(RPList, comboBox);
 				}
 			}
 
@@ -336,7 +410,7 @@ public class CreatePanelRP extends JPanel {
 						else if (!validDate) JOptionPane.showMessageDialog(null, "Le format de la date donnée est incorrect!", "Erreur",
 									JOptionPane.ERROR_MESSAGE);
 					
-						if(validMontant && date != null) {
+						if(validMontant && date != null && RPList.isSelectionEmpty()) {
 							Fournisseur f =  Filter.getFournisseur(comboBox.getSelectedItem().toString());
 							Paiement p = new Paiement(date, montant, f);
 							p.description = textFields[1].getText();
@@ -363,8 +437,30 @@ public class CreatePanelRP extends JPanel {
 							TransactionFiles.createPaiement(p.noTransaction, p);
 							enregistrer.setEnabled(false);
 							creer.setEnabled(true);
-							Filter.setListFournisseurPaiements(RPList, comboBox);
+						} 
+						
+						if(!RPList.isSelectionEmpty()) {
+
+							Date newDate = null;
+							boolean validNewDate = Pattern.isDate(changedDate);
+							if (validNewDate && !(changedDate == null)) {
+								try {
+									newDate = Pattern.format.parse(changedDate);
+								} catch (ParseException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								Paiement paiementSelected = (Paiement) RPList.getSelectedValue();
+								String etatCompte = bg.getSelection().getActionCommand().toString();
+								TransactionFiles.updatePaiement(paiementSelected.noTransaction, newDate, etatCompte);
+							} // end date formatting
+							creer.setEnabled(true);
+							enregistrer.setEnabled(false);
+							JOptionPane.showMessageDialog(null, "Date modifiée", "Modification",JOptionPane.INFORMATION_MESSAGE);
+						
 						}
+						cash.setSelected(true);
+						Filter.setListFournisseurPaiements(RPList, comboBox);
 					}
 
 				}

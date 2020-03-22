@@ -43,6 +43,7 @@ public abstract class Transaction implements Serializable, Comparable<Transactio
 		return 
 				" ID: " + noTransaction +
 				" Date Issue: " + dateTransaction + 
-				" total: " + montant;
+				" Total: " + montant +
+				"Type Paie:" + typePaie;
 	}
 }
