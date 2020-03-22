@@ -302,6 +302,24 @@ public class Files implements Serializable {
 		} catch (Exception e) {	}
 	}
 
+	public static void updateCategorie(int noC, String changedName) {
+		// TODO Auto-generated method stub
+
+		categorieMap = getCategories();
+		Categorie toModify = (Categorie) categorieMap.get(noC);
+		toModify.nomCategorie = changedName;
+		try {
+			FileOutputStream out = new FileOutputStream("C:\\projetNFA035\\categories.txt");
+			ObjectOutputStream oos = new ObjectOutputStream(out);
+			oos.writeObject(categorieMap);
+			oos.flush();
+			oos.close();
+
+		} catch (Exception e) {	}
+	
+		
+	}
+
 	
 	}
 

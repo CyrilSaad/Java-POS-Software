@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -24,6 +26,7 @@ public class CreatePanelCategorie extends JPanel {
 	JList articleList = new JList();
 	JTable table = new JTable();
 	JComboBox combobox = new JComboBox();
+	String changedName;
 	CreatePanelCategorie(String ss, JFrame frame) {
 		this.frame = frame;
 		JPanel parentPanel, buttonPanel;
@@ -237,8 +240,18 @@ public class CreatePanelCategorie extends JPanel {
 						enregistrer.setEnabled(false);
 						creer.setEnabled(true);
 					}
-				} else {
-
+				} 
+				
+				if (!articleList.isSelectionEmpty()) {
+				
+					boolean validName = Main.isName(changedName);
+					if (validName && !(changedName == null)) {
+						Categorie catSelected = (Categorie) articleList.getSelectedValue();
+						Files.updateCategorie(catSelected.noCategorie, changedName);	
+						JOptionPane.showMessageDialog(null, "Nom modifié", "Modification",JOptionPane.INFORMATION_MESSAGE);
+					} // end date formatting
+					creer.setEnabled(true);
+					enregistrer.setEnabled(false);
 				}
 				Filter.setListCategorie(articleList);
 			} // end enregis
@@ -259,7 +272,7 @@ public class CreatePanelCategorie extends JPanel {
 		if (!articleList.getValueIsAdjusting() && !articleList.isSelectionEmpty()) {
 			Categorie c = (Categorie) articleList.getSelectedValue();
 			ArrayList<Article> articles = Filter.getCategorieArticles(c);
-
+			enregistrer.setEnabled(true);
 			for (int i = 0; i < articles.size(); i++) {
 				Article item = articles.get(i);
 				tabmod.setValueAt(item.noArticle, i, 0);
@@ -270,6 +283,28 @@ public class CreatePanelCategorie extends JPanel {
 				tabmod.setValueAt( (int) (item.tauxProfit * 100 )+ "%", i, 5);
 
 			}
+			Categorie catSelected = (Categorie) articleList.getSelectedValue();
+			
+			textFields[1].addFocusListener(new FocusListener() {
+
+			    @Override
+			    public void focusGained(FocusEvent e) {
+			        textFields[1].setText(null);
+			        
+			        // Empty the text field when it receives focus
+			    }
+
+				@Override
+				public void focusLost(FocusEvent arg0) {
+					changedName = textFields[1].getText();
+					
+				}
+
+			});
+
+			textFields[1].setEditable(true);
+			textFields[0].setText(catSelected.nomCategorie);
+			
 		}
 
 	}
